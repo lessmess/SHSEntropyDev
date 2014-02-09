@@ -15,12 +15,10 @@ public:
 
 	
 	enum {
-		//UPPER_SOLONOID_CHANNEL = 1,  // Remove
-		//LOWER_SOLONOID_CHANNEL = 2,
 		ARM_RAIL = 1,
 		ARM_ROTATION = 3,
 		KICKER_SHIFTER = 5, 
-		KICKER_TRIGGER = 7 //Renamed
+		KICKER_TRIGGER = 7
 	}Solonoid;
 	
 	enum {
@@ -58,8 +56,8 @@ public:
     
 	enum { 
     	GAME_BUTTON_NOT_USED         = 0,
-    	KICKER_TRIGGERKICK           = 2,
-    	KICKER_PREPAREKICK           = 3,
+    	KICKER_TRIGGERKICK           = 10,
+    	KICKER_PREPAREKICK           = 9,
     	GAME_BUTTON_CRADLE_UP        = 3,
     	GAME_BUTTON_CRADLE_DOWN      = 2,
 		GAME_BUTTON_ARM_ROLL_IN      = 1,

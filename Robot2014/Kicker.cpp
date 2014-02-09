@@ -11,8 +11,8 @@ bool Kicker::Initialize()
 	PullMotor = new Jaguar(IODefinitions::KICKER_PULL); 
 	Piston_Trigger = new Solenoid(IODefinitions::KICKER_TRIGGER);
 	Piston_Shifter = new Solenoid(IODefinitions::KICKER_SHIFTER);
-	Piston_Trigger->Set(0);
-	Piston_Shifter->Set(0);
+	Piston_Trigger->Set(LOCKED);
+	Piston_Shifter->Set(DISENGAGED);
 	kickerState = idle;
 	pistonTimer = 0;
 	pullTimer = 0;
@@ -22,7 +22,8 @@ bool Kicker::Initialize()
 void Kicker::Cleanup()
 { 
 	PullMotor->Disable();
-	Piston_Trigger->Set(0);
+	Piston_Trigger->Set(LOCKED);
+	Piston_Shifter->Set(DISENGAGED);
 }
 
 void Kicker::Kick(bool pull, bool kick)
@@ -33,8 +34,8 @@ void Kicker::Kick(bool pull, bool kick)
 		case idle: 
 			if( true == pull)
 			{
-				Piston_Shifter->Set(1);
-				PullMotor->Set(0.5);
+				Piston_Shifter->Set(ENGAGED);
+				PullMotor->Set(0.4);
 				kickerState = pulling;
 				pullTimer = PULLTIME;
 			}
@@ -47,14 +48,14 @@ void Kicker::Kick(bool pull, bool kick)
 			else
 				{
 				PullMotor->Set(0.0);
-				Piston_Shifter->Set(0);
+				Piston_Shifter->Set(DISENGAGED);
 				kickerState = readytoshoot;
 				}
 			break;
 		case readytoshoot:
 			if (true == kick)
 			{
-				Piston_Trigger->Set(0);
+				Piston_Trigger->Set(RELEASED);
 				pistonTimer = INITIALTIME;
 				kickerState = kicked;
 			}
@@ -66,7 +67,7 @@ void Kicker::Kick(bool pull, bool kick)
 			}
 			else
 			{
-				Piston_Trigger->Set(1);
+				Piston_Trigger->Set(LOCKED);
 				kickerState = idle;
 			}
 	}

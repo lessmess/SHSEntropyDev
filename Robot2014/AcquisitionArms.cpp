@@ -51,9 +51,9 @@ void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT)) {
-		MotorExtender->Set(0.5);
+		MotorExtender->Set(0.2);
 	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_IN)) {
-		MotorExtender->Set(-0.5);
+		MotorExtender->Set(-0.2);
 	} else {
 		MotorExtender->Set(0.0);
 	}
@@ -62,7 +62,7 @@ void AcquisitionArms::BeltEnable(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN)) {
 		MotorBelt->Set(0.5);
-	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN)){
+	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_OUT)){
 		MotorBelt->Set(-0.5);
 	} else {
 		MotorBelt->Set(0.0);

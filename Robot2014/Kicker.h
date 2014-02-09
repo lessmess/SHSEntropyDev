@@ -2,7 +2,12 @@
 #define __KICKER__
 
 #define INITIALTIME 50
-#define PULLTIME 100
+#define PULLTIME 300
+#define DISENGAGED 1
+#define ENGAGED 0
+#define LOCKED 0
+#define RELEASED 1
+
 
 #include "WPILib.h"
 #include "EntropySubsystemTemplate.h"
