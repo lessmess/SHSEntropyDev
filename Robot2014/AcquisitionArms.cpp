@@ -21,8 +21,6 @@ bool AcquisitionArms::Initialize()
 void AcquisitionArms::TeleopInitialize()
 {
 	airCompressor->Start();
-	DriverStationLCD::GetInstance()->Printf(DriverStationLCD::kUser_Line1, 1, "Enabled %d", airCompressor->Enabled()); 
-	DriverStationLCD::GetInstance()->UpdateLCD();
 }
 void AcquisitionArms::Cleanup() 
 {
@@ -43,10 +41,10 @@ void AcquisitionArms::UpperVerticalPos(EntropyJoystick * GameStick)
 }
 void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 {
-	if( GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN) 
-			^ GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_OUT))
+	if( GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_DOWN) 
+			^ GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP))
 	{
-		lowerSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT));
+		lowerSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP));
 	}
 }
 
@@ -62,9 +60,9 @@ void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 }
 void AcquisitionArms::BeltEnable(EntropyJoystick * GameStick)
 {
-	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP)) {
+	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN)) {
 		MotorBelt->Set(0.5);
-	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN)){
+	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN)){
 		MotorBelt->Set(-0.5);
 	} else {
 		MotorBelt->Set(0.0);

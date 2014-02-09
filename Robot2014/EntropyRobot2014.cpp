@@ -143,7 +143,6 @@ public:
 		Arm.LowerVerticalPos(GameStick);
 		Arm.Extend(GameStick);
 		Arm.BeltEnable(GameStick);
-        Arm.Update();
 
 		
 	} // TeleopPeriodic(void)

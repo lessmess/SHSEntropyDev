@@ -23,14 +23,11 @@ private:
 	EntropyInfraredSensor InfraredSensor;
 	Victor * MotorBelt;
 	Jaguar * MotorExtender;
-	
-	bool armUp;
+
 public:
 	AcquisitionArms();
 	
 	bool Initialize ();
-	
-	void Update();
 	
 	void TeleopInitialize();
 		
