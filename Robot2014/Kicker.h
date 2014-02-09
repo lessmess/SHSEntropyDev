@@ -2,6 +2,7 @@
 #define __KICKER__
 
 #define INITIALTIME 50
+#define PULLTIME 100
 
 #include "WPILib.h"
 #include "EntropySubsystemTemplate.h"
@@ -12,11 +13,12 @@ class Kicker : public EntropySubsystemTemplate
 	
 private:
 	// The robot shooter left, right, up, down control
-	CANJaguar *PullMotor;
-	Solenoid *Piston;
-	DigitalInput *PullSwitch;
+	Jaguar *PullMotor;
+	Solenoid *Piston_Trigger;
+	Solenoid *Piston_Shifter;
 	int kickerState;
 	int pistonTimer;
+	int pullTimer;
 	enum {
 		idle,
 		pulling,
