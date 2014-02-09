@@ -7,7 +7,7 @@
 #include "AcquisitionArms.h"
 #include "GenericHID.h"
 #include "Math.h"
-#include "Kicker.h"
+//#include "Kicker.h"
 
 
 class EntropyRobot2014 : public IterativeRobot
@@ -28,9 +28,9 @@ class EntropyRobot2014 : public IterativeRobot
 	DriverStationLCD *ds; 
 	
 	// Declare SHS Subsystems here
-	EntropyDrive MyRobot;		// The Robot Drive instance
+	//EntropyDrive MyRobot;		// The Robot Drive instance
 	AcquisitionArms Arm;	
-    Kicker MyShooter; 			//The Shooter instance
+    //Kicker MyShooter; 			//The Shooter instance
 	
 	// Local variables to count the number of periodic loops performed
 	UINT32 m_autoPeriodicLoops;
@@ -80,7 +80,7 @@ public:
 		
 		
 		// Initialize SHS Subsystems here
-		MyRobot.Initialize();
+		//MyRobot.Initialize();
 		Arm.Initialize();
 		InfraredSensor.Initialize();
         //MyShooter.Initialize();
@@ -113,7 +113,7 @@ public:
 	{
 		
 		//Disable Drive
-		MyRobot.Cleanup();
+		//MyRobot.Cleanup();
 		Arm.Cleanup();
 		//MyShooter.Cleanup();
 		InfraredSensor.Cleanup();
@@ -137,7 +137,7 @@ public:
         //MyShooter.Kick(GameStick->GetRawButton(IODefinitions::KICKER_BUTTON_1), 
         //		GameStick->GetRawButton(IODefinitions::KICKER_BUTTON_2));
         
-		MyRobot.DriveRobot(DriveStick->GetY(),DriveStick->GetX());
+		//MyRobot.DriveRobot(DriveStick->GetY(),DriveStick->GetX());
 		
 		Arm.UpperVerticalPos(GameStick);
 		Arm.LowerVerticalPos(GameStick);

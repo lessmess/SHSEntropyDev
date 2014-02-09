@@ -14,15 +14,15 @@ private:
 	static const int pressureSwitchChannel = IODefinitions::PRESSURE_SWITCH_CHANNEL;
 	static const int compressorRelayModule = IODefinitions::COMPRESSOR_RELAY_MODULE;
 	static const int pressureSwitchModule = IODefinitions::PRESSURE_SWITCH_MODULE;
-	static const int upperSolenoidChannel = IODefinitions::UPPER_SOLONOID_CHANNEL;
-	static const int lowerSolenoidChannel = IODefinitions::LOWER_SOLONOID_CHANNEL;
+	static const int upperSolenoidChannel = IODefinitions::ARM_ROTATION;
+	static const int lowerSolenoidChannel = IODefinitions::ARM_RAIL;
 	Compressor * airCompressor;
 	Solenoid * upperSolenoid;
 	Solenoid * lowerSolenoid;
 	
 	EntropyInfraredSensor InfraredSensor;
-	CANJaguar * MotorBelt;
-	CANJaguar * MotorExtender;
+	Victor * MotorBelt;
+	Jaguar * MotorExtender;
 public:
 	AcquisitionArms();
 	

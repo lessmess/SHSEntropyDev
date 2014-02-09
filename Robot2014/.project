@@ -21,32 +21,22 @@
 		<link>
 			<name>AcquisitionArms.cpp</name>
 			<type>1</type>
-			<location>C:/Users/Team138/Documents/GitHub/SHSEntropy2014-1/Robot2014/AcquisitionArms.cpp</location>
+			<locationURI>PROJECT_DIR/AcquisitionArms.cpp</locationURI>
 		</link>
 		<link>
 			<name>AcquisitionArms.h</name>
 			<type>1</type>
-			<location>C:/Users/Team138/Documents/GitHub/SHSEntropy2014-1/Robot2014/AcquisitionArms.h</location>
+			<locationURI>PROJECT_DIR/AcquisitionArms.h</locationURI>
 		</link>
 		<link>
 			<name>EntropyInfraredSensor.cpp</name>
 			<type>1</type>
-			<location>C:/Users/Team138/Documents/GitHub/SHSEntropy2014-1/Robot2014/EntropyInfraredSensor.cpp</location>
+			<locationURI>PROJECT_DIR/EntropyInfraredSensor.cpp</locationURI>
 		</link>
 		<link>
 			<name>EntropyInfraredSensor.h</name>
 			<type>1</type>
-			<location>C:/Users/Team138/Documents/GitHub/SHSEntropy2014-1/Robot2014/EntropyInfraredSensor.h</location>
-		</link>
-		<link>
-			<name>Kicker.cpp</name>
-			<type>1</type>
-			<location>C:/Users/Team138/Documents/GitHub/SHSEntropy2014-1/Robot2014/Kicker.cpp</location>
-		</link>
-		<link>
-			<name>Kicker.h</name>
-			<type>1</type>
-			<location>C:/Users/Team138/Documents/GitHub/SHSEntropy2014-1/Robot2014/Kicker.h</location>
+			<locationURI>PROJECT_DIR/EntropyInfraredSensor.h</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

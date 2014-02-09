@@ -13,14 +13,16 @@ bool AcquisitionArms::Initialize()
 	upperSolenoid = new Solenoid (upperSolenoidChannel);
 	lowerSolenoid = new Solenoid (lowerSolenoidChannel);
 	InfraredSensor.Initialize();
-	MotorBelt = new CANJaguar(IODefinitions::MOTOR_ACQUISITION_BELT);
-	MotorExtender = new CANJaguar(IODefinitions::MOTOR_ACQUISITION_EXTENDER);
+	MotorBelt = new Victor(IODefinitions::MOTOR_ACQUISITION_BELT);
+	MotorExtender = new Jaguar(IODefinitions::MOTOR_ACQUISITION_EXTENDER);
 
 	return true;
 }
 void AcquisitionArms::TeleopInitialize()
 {
 	airCompressor->Start();
+	DriverStationLCD::GetInstance()->Printf(DriverStationLCD::kUser_Line1, 1, "Enabled %d", airCompressor->Enabled()); 
+	DriverStationLCD::GetInstance()->UpdateLCD();
 }
 void AcquisitionArms::Cleanup() 
 {
@@ -32,11 +34,19 @@ void AcquisitionArms::Cleanup()
 }
 void AcquisitionArms::UpperVerticalPos(EntropyJoystick * GameStick) 
 {
-	upperSolenoid->Set(GameStick->GetRawButton(3));
+	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP) && GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN))
+	{}
+	else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP)) {
+		upperSolenoid->Set(true);
+	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN)) {
+		upperSolenoid->Set(false);
+	}
+	
+	//bool state1 = GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN) && !GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP);
 }
 void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 {
-	lowerSolenoid->Set(GameStick->GetRawButton(4));
+	lowerSolenoid->Set(GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
 }
 void AcquisitionArms::Update()
 {
@@ -50,9 +60,9 @@ void AcquisitionArms::Update()
 void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT)) {
-		MotorExtender->Set(0.2);
+		MotorExtender->Set(0.5);
 	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_IN)) {
-		MotorExtender->Set(-0.2);
+		MotorExtender->Set(-0.5);
 	} else {
 		MotorExtender->Set(0.0);
 	}
