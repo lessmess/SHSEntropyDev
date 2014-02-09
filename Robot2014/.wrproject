@@ -240,12 +240,7 @@
         </mapAttribute>
     </attributes>
     <buildtargets>
-        <buildtarget buildtool="Linker" name="BuiltinDefaultCode" passed="false" targetname="BuiltinDefaultCode">
-            <contents>
-                <buildtargetreference name="/Robot2014/BuiltinDefaultCode_partialImage"/>
-            </contents>
-        </buildtarget>
-        <buildtarget buildtool="Partial Image Linker" name="BuiltinDefaultCode_partialImage" passed="true" targetname="BuiltinDefaultCode_partialImage">
+        <buildtarget buildtool="Linker" name="Robot2014" passed="false" targetname="Robot2014">
             <contents>
                 <folder name="/Robot2014" recursive="true"/>
             </contents>

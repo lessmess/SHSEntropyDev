@@ -34,29 +34,22 @@ void AcquisitionArms::Cleanup()
 }
 void AcquisitionArms::UpperVerticalPos(EntropyJoystick * GameStick) 
 {
-	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP) && GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN))
-	{}
-	else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP)) {
-		upperSolenoid->Set(true);
-	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN)) {
-		upperSolenoid->Set(false);
+	if( GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP) 
+			^ GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN))
+	{
+		upperSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP));
 	}
 	
-	//bool state1 = GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN) && !GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP);
 }
 void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 {
-	lowerSolenoid->Set(GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
-}
-void AcquisitionArms::Update()
-{
-	if (InfraredSensor.GetValue() > 1.4)
+	if( GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN) 
+			^ GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_OUT))
 	{
-		lowerSolenoid->Set(true);
-	} else {
-		lowerSolenoid->Set(false);
+		lowerSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT));
 	}
 }
+
 void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT)) {
@@ -70,9 +63,9 @@ void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 void AcquisitionArms::BeltEnable(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP)) {
-		MotorBelt->Set(0.2);
+		MotorBelt->Set(0.5);
 	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN)){
-		MotorBelt->Set(-0.2);
+		MotorBelt->Set(-0.5);
 	} else {
 		MotorBelt->Set(0.0);
 	}
