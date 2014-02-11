@@ -16,6 +16,7 @@ bool Kicker::Initialize()
 	kickerState = idle;
 	pistonTimer = 0;
 	pullTimer = 0;
+	int unwindTimer = 0;
 	return true;
 }
 
@@ -48,10 +49,22 @@ void Kicker::Kick(bool pull, bool kick)
 			else
 				{
 				PullMotor->Set(0.0);
-				Piston_Shifter->Set(DISENGAGED);
-				kickerState = readytoshoot;
+				PullMotor->Set(0.2);
+				unwindTimer = UNWINDTIME;
+				kickerState = unwinding;
 				}
 			break;
+		case unwinding:
+			if(unwindTimer > 0)
+			{
+				unwindTimer--;
+			}
+			else
+			{
+				PullMotor->Set(0.0);
+				Piston_Shifter->Set(DISENGAGED);
+				kickerState = readytoshoot;
+			}
 		case readytoshoot:
 			if (true == kick)
 			{
