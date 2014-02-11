@@ -9,7 +9,6 @@ AcquisitionArms::AcquisitionArms() {
 
 bool AcquisitionArms::Initialize() 
 {
-	airCompressor = new Compressor (pressureSwitchModule, pressureSwitchChannel, compressorRelayModule, compressorRelayChannel);
 	upperSolenoid = new Solenoid (upperSolenoidChannel);
 	lowerSolenoid = new Solenoid (lowerSolenoidChannel);
 	InfraredSensor.Initialize();
@@ -20,7 +19,7 @@ bool AcquisitionArms::Initialize()
 }
 void AcquisitionArms::TeleopInitialize()
 {
-	airCompressor->Start();
+	
 }
 void AcquisitionArms::Cleanup() 
 {
@@ -28,7 +27,7 @@ void AcquisitionArms::Cleanup()
 	lowerSolenoid->Set(false);
 	MotorExtender->Set(0.0);
 	MotorBelt->Set(0.0);
-	airCompressor->Stop();
+	
 }
 void AcquisitionArms::UpperVerticalPos(EntropyJoystick * GameStick) 
 {
@@ -51,9 +50,9 @@ void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT)) {
-		MotorExtender->Set(0.2);
+		MotorExtender->Set(0.5);
 	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_IN)) {
-		MotorExtender->Set(-0.2);
+		MotorExtender->Set(-0.5);
 	} else {
 		MotorExtender->Set(0.0);
 	}
@@ -61,9 +60,9 @@ void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 void AcquisitionArms::BeltEnable(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN)) {
-		MotorBelt->Set(0.5);
+		MotorBelt->Set(1.0);
 	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_OUT)){
-		MotorBelt->Set(-0.5);
+		MotorBelt->Set(-1.0);
 	} else {
 		MotorBelt->Set(0.0);
 	}

@@ -10,13 +10,8 @@
 class AcquisitionArms : public EntropySubsystemTemplate
 {
 private:
-	static const int compressorRelayChannel = IODefinitions::COMPRESSOR_RELAY_CHANNEL;
-	static const int pressureSwitchChannel = IODefinitions::PRESSURE_SWITCH_CHANNEL;
-	static const int compressorRelayModule = IODefinitions::COMPRESSOR_RELAY_MODULE;
-	static const int pressureSwitchModule = IODefinitions::PRESSURE_SWITCH_MODULE;
 	static const int upperSolenoidChannel = IODefinitions::ARM_ROTATION;
 	static const int lowerSolenoidChannel = IODefinitions::ARM_RAIL;
-	Compressor * airCompressor;
 	Solenoid * upperSolenoid;
 	Solenoid * lowerSolenoid;
 	

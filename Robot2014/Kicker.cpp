@@ -1,17 +1,5 @@
 #include "Kicker.h"
 #include "IODefinitions.h"
-#include <string>
-#include <iostream>
-#include <fstream>
-
-#define NO_OF_KEYS 2
-
-string keys[NO_OF_KEYS] = {
-			"time",
-			"speed"
-	};
-	
-	float vals[NO_OF_KEYS];
 
 Kicker::Kicker() {
 	
@@ -28,33 +16,6 @@ bool Kicker::Initialize()
 	kickerState = idle;
 	pistonTimer = 0;
 	pullTimer = 0;
-	
-	string line;
-	ifstream file("kickerinit.txt");
-	
-	if (NULL != file)
-	{
-		while (getline(file,line))
-		{
-			bool key_found = false;
-			int x;
-			for (x = 0; x>NO_OF_KEYS; x++)
-			{
-				if (string::npos != line.find(keys[x]))
-				{
-					key_found = true;
-					break;
-				}
-			}
-			if (key_found == true)
-			{
-				char * cptr = (char*)line.data();
-				vals[x] = atof(strtok(cptr, "= "));
-			}
-		}
-		file.close();
-	}
-	
 	return true;
 }
 
@@ -76,11 +37,7 @@ void Kicker::Kick(bool pull, bool kick)
 				Piston_Shifter->Set(ENGAGED);
 				PullMotor->Set(0.4);
 				kickerState = pulling;
-				for (int x = 0; x>NO_OF_KEYS; x++){
-					if (keys[x] == "time"){
-						pullTimer = (int)vals[x];
-					}
-				}
+				pullTimer = PULLTIME;
 			}
 			break;
 		case pulling:

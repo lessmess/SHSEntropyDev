@@ -8,6 +8,8 @@
 #include "GenericHID.h"
 #include "Math.h"
 #include "Kicker.h"
+#include "EntropyCompressor.h"
+//#include "Autonomy.h"
 
 
 class EntropyRobot2014 : public IterativeRobot
@@ -28,10 +30,12 @@ class EntropyRobot2014 : public IterativeRobot
 	DriverStationLCD *ds; 
 	
 	// Declare SHS Subsystems here
-	//EntropyDrive MyRobot;		// The Robot Drive instance
+	EntropyCompressor MyCompressor;
+	EntropyDrive MyRobot;		// The Robot Drive instance
 	AcquisitionArms Arm;	
-    Kicker MyShooter; 			//The Shooter instance
-	
+    Kicker MyKicker; 			//The Shooter instance
+    //Autonomy* MyAutoRobot;
+    
 	// Local variables to count the number of periodic loops performed
 	UINT32 m_autoPeriodicLoops;
 	UINT32 m_disabledPeriodicLoops;
@@ -52,7 +56,7 @@ public:
 		// Establish Hardware IO Controllers
 		DriveStick = new EntropyJoystick(IODefinitions::USB_PORT_1);
 		GameStick = new EntropyJoystick(IODefinitions::USB_PORT_2);			
-	
+		MyCompressor.Initialize();
 			
 		// Acquire the Driver Station object
 		EntropyDriverStation = DriverStation::GetInstance();
@@ -80,11 +84,14 @@ public:
 		
 		
 		// Initialize SHS Subsystems here
-		//MyRobot.Initialize();
+		MyRobot.Initialize();
+		MyCompressor.Initialize();
 		Arm.Initialize();
 		InfraredSensor.Initialize();
-        MyShooter.Initialize();
-		
+        MyKicker.Initialize();
+        
+        //MyAutoRobot = new Autonomy(MyRobot);
+        
 		printf("RobotInit() completed.\n");
 	}
 	
@@ -113,9 +120,9 @@ public:
 	{
 		
 		//Disable Drive
-		//MyRobot.Cleanup();
+		MyRobot.Cleanup();
 		Arm.Cleanup();
-		MyShooter.Cleanup();
+		MyKicker.Cleanup();
 		InfraredSensor.Cleanup();
 		
 	}
@@ -124,7 +131,7 @@ public:
 	{
 		
 		m_autoPeriodicLoops++;
-
+		//MyAutoRobot->Update(GetClock());
 	}
 
 	
@@ -134,10 +141,10 @@ public:
 		m_telePeriodicLoops++;
 		
 		//Feed joystick inputs to each subsystem here
-        MyShooter.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
-        		GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
+        MyKicker.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
+        GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
         
-		//MyRobot.DriveRobot(DriveStick->GetY(),DriveStick->GetX());
+		MyRobot.DriveRobot(DriveStick->GetY(),DriveStick->GetRawAxis(4));
 		
 		Arm.UpperVerticalPos(GameStick);
 		Arm.LowerVerticalPos(GameStick);

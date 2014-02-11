@@ -2,6 +2,7 @@
 #define ENTROPYDRIVE_H_
 
 #include "EntropySubsystemTemplate.h"
+#include "WPILib.h"
 
 class EntropyDrive : public EntropySubsystemTemplate {
 	

@@ -2,6 +2,14 @@
 #define IO_DEFINITIONS_H_
 
 
+//Global Constants
+const float SPROCKET_1_TEETH_COUNT = 18.0f;
+const float SPROCKET_2_TEETH_COUNT = 45.0f;
+const float WHEEL_DIAMETER = 6.0f; // in inches
+const float PULSE_RATIO = 1 / (SPROCKET_1_TEETH_COUNT / SPROCKET_2_TEETH_COUNT * 3.14159265 * WHEEL_DIAMETER);
+
+
+
 class IODefinitions {
 	
 public:
@@ -62,8 +70,8 @@ public:
     	GAME_BUTTON_CRADLE_DOWN      = 2,
 		GAME_BUTTON_ARM_ROLL_IN      = 1,
 		GAME_BUTTON_ARM_ROLL_OUT     = 4,
-		GAME_BUTTON_ARM_UP           = 5,
-    	GAME_BUTTON_ARM_DOWN         = 7,
+		GAME_BUTTON_ARM_UP           = 7,
+    	GAME_BUTTON_ARM_DOWN         = 5,
     	GAME_BUTTON_ARM_IN           = 6,
     	GAME_BUTTON_ARM_OUT          = 8  
     	

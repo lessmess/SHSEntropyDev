@@ -44,7 +44,7 @@ bool EntropyDrive::DriveRobot(float MoveValue, float RotateValue){
 	RotateValue = Limit(RotateValue);
 
 	MoveValue = addDeadZone(MoveValue);
-	MoveValue = moveValueDampen(MoveValue);
+	//MoveValue = moveValueDampen(MoveValue);
 
 	LeftMotors = left_scale(RotateValue, MoveValue, Rotate);  
 	RightMotors = right_scale(RotateValue, MoveValue, Rotate);
