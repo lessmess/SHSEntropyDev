@@ -25,6 +25,7 @@ private:
 	int kickerState;
 	int pistonTimer;
 	int pullTimer;
+	int unwindTimer;
 	enum {
 		idle,
 		pulling,

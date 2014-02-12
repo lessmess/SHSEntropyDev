@@ -16,7 +16,7 @@ bool Kicker::Initialize()
 	kickerState = idle;
 	pistonTimer = 0;
 	pullTimer = 0;
-	int unwindTimer = 0;
+	unwindTimer = 0;
 	return true;
 }
 
