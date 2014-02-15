@@ -2,7 +2,7 @@
 #define __KICKER__
 
 #define INITIALTIME 50
-#define UNWINDTIME 50
+#define UNWINDTIME 70
 #define PULLTIME 300
 #define DISENGAGED 1
 #define ENGAGED 0
