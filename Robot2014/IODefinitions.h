@@ -6,8 +6,9 @@
 const float SPROCKET_1_TEETH_COUNT = 18.0f;
 const float SPROCKET_2_TEETH_COUNT = 45.0f;
 const float WHEEL_DIAMETER = 6.0f; // in inches
-const float PULSE_RATIO = 1 / (SPROCKET_1_TEETH_COUNT / SPROCKET_2_TEETH_COUNT * 3.14159265 * WHEEL_DIAMETER);
-
+//const float PULSE_RATIO = 1 / (SPROCKET_1_TEETH_COUNT / SPROCKET_2_TEETH_COUNT * 3.14159265 * WHEEL_DIAMETER);
+// TODO: fill out numbers above
+const float PULSE_RATIO = 0.091;
 
 
 class IODefinitions {
