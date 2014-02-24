@@ -9,7 +9,7 @@
 #include "Math.h"
 #include "Kicker.h"
 #include "EntropyCompressor.h"
-//#include "Autonomy.h"
+#include "Autonomy.h"
 
 
 class EntropyRobot2014 : public IterativeRobot
@@ -34,12 +34,14 @@ class EntropyRobot2014 : public IterativeRobot
 	EntropyDrive MyRobot;		// The Robot Drive instance
 	AcquisitionArms Arm;	
     Kicker MyKicker; 			//The Shooter instance
-    //Autonomy* MyAutoRobot;
+    Autonomy* MyAutoRobot;
     
 	// Local variables to count the number of periodic loops performed
 	UINT32 m_autoPeriodicLoops;
 	UINT32 m_disabledPeriodicLoops;
 	UINT32 m_telePeriodicLoops;
+	
+	bool autoKicked;
 	
 	//Creating a test "InfraredSensor", by way of using an Autonomous Selector Switch
 	EntropyInfraredSensor InfraredSensor;
@@ -67,6 +69,8 @@ public:
 		m_autoPeriodicLoops = 0;
 		m_disabledPeriodicLoops = 0;
 		m_telePeriodicLoops = 0;
+		
+		autoKicked = false;
 
 		ds = DriverStationLCD::GetInstance();
 		
@@ -90,7 +94,7 @@ public:
 		InfraredSensor.Initialize();
         MyKicker.Initialize();
         
-        //MyAutoRobot = new Autonomy(MyRobot);
+        MyAutoRobot = new Autonomy(MyRobot);
         
 		printf("RobotInit() completed.\n");
 	}
@@ -131,7 +135,21 @@ public:
 	{
 		
 		m_autoPeriodicLoops++;
-		//MyAutoRobot->Update(GetClock());
+		
+		static double autoEpoch = GetTime();
+		
+		MyAutoRobot->Update(GetClock() - autoEpoch);
+
+		if (MyKicker.getKickerState() != Kicker::readytoshoot && autoKicked == false)
+		{
+			MyKicker.Kick(true, false);
+		}
+		else if(autoKicked == false)
+		{
+			MyKicker.Kick(false, true);
+
+			autoKicked = true;
+		}
 	}
 
 	
