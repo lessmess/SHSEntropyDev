@@ -2,8 +2,8 @@
 #define __KICKER__
 
 #define INITIALTIME 50
-#define UNWINDTIME 70
-#define PULLTIME 300
+#define UNWINDTIME 65
+#define PULLTIME 215
 #define DISENGAGED 1
 #define ENGAGED 0
 #define LOCKED 0
@@ -26,6 +26,8 @@ private:
 	int pistonTimer;
 	int pullTimer;
 	int unwindTimer;
+	
+public:
 	enum {
 		idle,
 		pulling,
@@ -33,11 +35,13 @@ private:
 		readytoshoot,
 		kicked
 	};
-
-
 	
-public:
 	Kicker( );
+	
+	int getKickerState() 
+	{
+		return kickerState;  
+	}
 	
 	bool Initialize ();
 	
