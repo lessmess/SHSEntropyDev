@@ -9,6 +9,8 @@
 #include "Math.h"
 #include "Kicker.h"
 #include "EntropyCompressor.h"
+#include "EntropyCamera.h"
+#include "EntropyRangeFinder.h"
 #include "Autonomy.h"
 
 
@@ -34,6 +36,8 @@ class EntropyRobot2014 : public IterativeRobot
 	EntropyDrive MyRobot;		// The Robot Drive instance
 	AcquisitionArms Arm;	
     Kicker MyKicker; 			//The Shooter instance
+    EntropyCamera MyCameraControl;
+    EntropyRangeFinder MyRangeFinder;
     Autonomy* MyAutoRobot;
     
 	// Local variables to count the number of periodic loops performed
@@ -59,6 +63,8 @@ public:
 		DriveStick = new EntropyJoystick(IODefinitions::USB_PORT_1);
 		GameStick = new EntropyJoystick(IODefinitions::USB_PORT_2);			
 		MyCompressor.Initialize();
+		MyRangeFinder.Initialize();	
+		InfraredSensor.Initialize();
 			
 		// Acquire the Driver Station object
 		EntropyDriverStation = DriverStation::GetInstance();
@@ -93,6 +99,8 @@ public:
 		Arm.Initialize();
 		InfraredSensor.Initialize();
         MyKicker.Initialize();
+        MyCameraControl.Initialize();
+        MyRangeFinder.Initialize();
         
         MyAutoRobot = new Autonomy(MyRobot);
         
@@ -114,8 +122,6 @@ public:
 	{
 		m_telePeriodicLoops = 0;				// Reset the loop counter for teleop mode
 		m_dsPacketsReceivedInCurrentSecond = 0;	// Reset the number of dsPackets in current second
-				
-		Arm.TeleopInitialize();
 	}
 
 	/********************************** Periodic Routines *************************************/
@@ -129,6 +135,8 @@ public:
 		MyKicker.Cleanup();
 		InfraredSensor.Cleanup();
 		
+		DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Kicker: %s", "Disabled");
+		DriverStationLCD::GetInstance()->UpdateLCD();
 	}
 
 	void AutonomousPeriodic(void) 
@@ -158,11 +166,15 @@ public:
 		// increment the number of teleop periodic loops completed
 		m_telePeriodicLoops++;
 		
+		MyCameraControl.SetCameraPositionTelop();
+		MyRangeFinder.UpdateRangeLine4DS();
+		InfraredSensor.UpdateRangeLine5DS();
+		
 		//Feed joystick inputs to each subsystem here
         MyKicker.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
         GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
         
-		MyRobot.DriveRobot(DriveStick->GetY(),DriveStick->GetRawAxis(4));
+        MyRobot.DriveRobot(DriveStick->GetY(),DriveStick->GetRawAxis(4));
 		
 		Arm.UpperVerticalPos(GameStick);
 		Arm.LowerVerticalPos(GameStick);
