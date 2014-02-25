@@ -34,7 +34,7 @@ bool IdleState::Update(double _dt)
   
   // Sum the current time spent idle with the time between this frame and the last frame (delta),
   // and return whether it's exceeded the specified time to spend idle
-  return false;
+  return (m_msSpentIdle += _dt) > m_msToSpendIdle;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -194,14 +194,7 @@ Autonomy::Autonomy(EntropyDrive& _entDrive)
 	m_leftEncoder->Start();
 	m_rightEncoder->Start();
 	
-  //m_statesToComplete.push_back(new RotationState(_entDrive, 3.5));
-  //m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(4, 0)));
-  //m_statesToComplete.push_back(new RotationState(_entDrive, 3.5));
-  //m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(2, 0), m_leftEncoder, m_rightEncoder));
-  //m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 2.0));
-  //m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(2, 0), m_leftEncoder, m_rightEncoder));
-  //m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 3.1));
-  m_statesToComplete.push_back(new IdleState(_entDrive, 2000000000));
+  m_statesToComplete.push_back(new IdleState(_entDrive, 5000));
   m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(8, 0), m_leftEncoder, m_rightEncoder));
 
   m_currentState = m_statesToComplete.back();
