@@ -102,8 +102,6 @@ public:
         MyCameraControl.Initialize();
         MyRangeFinder.Initialize();
         
-        MyAutoRobot = new Autonomy(MyRobot);
-        
 		printf("RobotInit() completed.\n");
 	}
 	
@@ -116,6 +114,7 @@ public:
 	{
 		m_autoPeriodicLoops = 0;				// Reset the loop counter for autonomous mode
 		
+        	MyAutoRobot = new Autonomy(MyRobot);
 	}
 
 	void TeleopInit(void) 
