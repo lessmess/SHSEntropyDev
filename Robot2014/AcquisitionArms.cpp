@@ -17,9 +17,9 @@ bool AcquisitionArms::Initialize()
 
 	return true;
 }
-void AcquisitionArms::TeleopInitialize()
+void AcquisitionArms::SetAutoInitialState()
 {
-	
+	lowerSolenoid->Set(1);
 }
 void AcquisitionArms::Cleanup() 
 {
@@ -50,9 +50,9 @@ void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT)) {
-		MotorExtender->Set(0.5);
+		MotorExtender->Set(0.75);
 	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_IN)) {
-		MotorExtender->Set(-0.5);
+		MotorExtender->Set(-0.75);
 	} else {
 		MotorExtender->Set(0.0);
 	}
