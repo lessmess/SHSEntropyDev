@@ -17,6 +17,7 @@ bool Kicker::Initialize()
 	pistonTimer = 0;
 	pullTimer = 0;
 	unwindTimer = 0;
+	KickerLatchedSense = new DigitalInput(IODefinitions::KickerLatchedSense);
 	return true;
 }
 
@@ -38,6 +39,8 @@ void Kicker::Kick(bool pull, bool kick)
 			{
 				PullMotor->Set(0.0);
 				kickerState = pulling;
+				DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Kicker: %s", "Pulling");
+				DriverStationLCD::GetInstance()->UpdateLCD();
 				pullTimer = PULLTIME;
 				Piston_Shifter->Set(ENGAGED);
 			}
@@ -46,26 +49,30 @@ void Kicker::Kick(bool pull, bool kick)
 			if(pullTimer > 0)
 				{
 					pullTimer--;
-					PullMotor->Set(0.4);
+					PullMotor->Set(0.6);
 				}
-			else
+			else// if ((pullTimer <= 0) || (KickerLatchedSense->Get() == LOCKED))
 				{
 				PullMotor->Set(0.0);
 				unwindTimer = UNWINDTIME;
 				kickerState = unwinding;
+				DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Kicker: %s", "UnWinding");
+				DriverStationLCD::GetInstance()->UpdateLCD();
 				}
 			break;
 		case unwinding:
 			if(unwindTimer > 0)
 			{
 				unwindTimer--;
-				PullMotor->Set(-0.4);
+				PullMotor->Set(-0.7);
 			}
 			else
 			{	
 				PullMotor->Set(0.0);
 				Piston_Shifter->Set(DISENGAGED);
 				kickerState = readytoshoot;
+				DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Kicker: %s", "ReadyShoot");
+				DriverStationLCD::GetInstance()->UpdateLCD();
 			}
 		case readytoshoot:
 			if (true == kick)
@@ -84,6 +91,8 @@ void Kicker::Kick(bool pull, bool kick)
 			{
 				Piston_Trigger->Set(LOCKED);
 				kickerState = idle;
+				DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Kicker: %s", "Idle");
+				DriverStationLCD::GetInstance()->UpdateLCD();
 			}
 	}
 }
