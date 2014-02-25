@@ -97,6 +97,25 @@ void Kicker::Kick(bool pull, bool kick)
 	}
 }
 
+void Kicker::TestWich( bool RotateOneWay, bool RotateAnotherWay )
+{
+	if ( RotateOneWay && RotateAnotherWay )
+	{
+		PullMotor->Set(0.0); 
+	} 
+	else if ( RotateOneWay )
+	{   Piston_Shifter->Set(ENGAGED);
+		PullMotor->Set(0.5);;
+	} 
+	else if ( RotateAnotherWay ){
+		Piston_Shifter->Set(ENGAGED);
+		PullMotor->Set(-0.5);
+	}
+	else {
+		PullMotor->Set(0.0);
+	}
+}
+
 char * Kicker::GetFeedback(){ return NULL;}
 
 
