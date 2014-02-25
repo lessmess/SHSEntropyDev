@@ -31,9 +31,14 @@ public:
 	}Solonoid;
 	
 	enum {
-		AUTONOMOUS_SELECTOR_SWITCH = 6
-	}Selector_Switch;
-
+		KickerLatchedSense = 10,
+		ArmExtenderIn = 12
+	}DigIO;
+	
+	enum {
+		RANGE_FINDER = 4,
+		BALL_POSESSION_DETECTOR = 2
+	}AnalogIO;
 	
 	enum  {
 		UNUSED_0 =0,
@@ -54,7 +59,7 @@ public:
 		PWM_UNUSED_4,
 		KICKER_PULL,
 		PWM_UNUSED_6,
-		UNUSED_7
+		PWM_CAMERA_CONTROL=7
 	} PWM_MOTORS;
 
     enum {
