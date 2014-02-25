@@ -24,7 +24,7 @@ public:
 	
 	bool Initialize ();
 	
-	void TeleopInitialize();
+	void SetAutoInitialState();
 		
 	void Cleanup();
 		
