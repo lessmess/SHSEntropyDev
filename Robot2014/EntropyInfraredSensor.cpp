@@ -1,38 +1,32 @@
+
 #include "EntropyInfraredSensor.h"
 #include "IODefinitions.h"
-#include "EntropyJoystick.h"
+
+
 
 EntropyInfraredSensor::EntropyInfraredSensor() {
 	
-	
+	AIIFSensor = new AnalogChannel (IODefinitions::BALL_POSESSION_DETECTOR);
 }
 
-bool EntropyInfraredSensor::Initialize()    //Create necessary variables by connecting them to specific IO definitions.
+bool EntropyInfraredSensor::Initialize()
 {
 	
-	InfraredSensor = new AnalogChannel(IODefinitions::AUTONOMOUS_SELECTOR_SWITCH);
 	return true;
 }
 
+
+float EntropyInfraredSensor::UpdateRangeLine5DS()
+{
+	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Ball: %f", AIIFSensor->GetVoltage());
+	DriverStationLCD::GetInstance()->UpdateLCD();
+	return 0.0;
+}	
+	
 void EntropyInfraredSensor::Cleanup()
 { 
-	//Analog Channel does not support any disable or kill commands
-	// to kill a variable, VARNAME->Disable();
+	
 }
-
-
-float EntropyInfraredSensor::GetValue()
-{
-	return InfraredSensor->GetVoltage();
-}
-
-float EntropyInfraredSensor::GetAverageValue()
-{
-	return InfraredSensor->GetAverageVoltage();
-}
-
-//Add additional functions to be more specific from what was defined in the .h file.
 
 char * EntropyInfraredSensor::GetFeedback(){ return NULL;}
-
 
