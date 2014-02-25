@@ -27,6 +27,7 @@ private:
 	int pullTimer;
 	int unwindTimer;
 	
+	DigitalInput * KickerLatchedSense;
 public:
 	enum {
 		idle,
@@ -50,6 +51,8 @@ public:
 	void Kick (bool pull, bool kick);
 	
 	char * GetFeedback();
+	
+	void Kicker::TestWich( bool RotateOneWay, bool RotateAnotherWay);
 
 };
 #endif
