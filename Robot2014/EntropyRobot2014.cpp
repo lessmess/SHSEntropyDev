@@ -115,12 +115,18 @@ public:
 		m_autoPeriodicLoops = 0;				// Reset the loop counter for autonomous mode
 		
         	MyAutoRobot = new Autonomy(MyRobot);
+        	
+        	MyCameraControl.SetCameraPositionAuto();
+        	
+        	Arm.SetAutoInitialState();
 	}
 
 	void TeleopInit(void) 
 	{
 		m_telePeriodicLoops = 0;				// Reset the loop counter for teleop mode
 		m_dsPacketsReceivedInCurrentSecond = 0;	// Reset the number of dsPackets in current second
+		
+        	MyCameraControl.SetCameraPositionTelop();
 	}
 
 	/********************************** Periodic Routines *************************************/
@@ -143,7 +149,7 @@ public:
 		
 		m_autoPeriodicLoops++;
 		
-		static double autoEpoch = GetTime();
+		static double autoEpoch = GetClock();
 		
 		MyAutoRobot->Update(GetClock() - autoEpoch);
 
