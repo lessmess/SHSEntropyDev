@@ -15,9 +15,62 @@ bool Kicker::Initialize()
 	Piston_Shifter->Set(DISENGAGED);
 	kickerState = idle;
 	pistonTimer = 0;
-	pullTimer = 0;
-	unwindTimer = 0;
+	
+	INITIALTIME = 50;
+	
+	pullTimer = PULLTIME;
+	unwindTimer = UNWINDTIME;
 	KickerLatchedSense = new DigitalInput(IODefinitions::KickerLatchedSense);
+	
+	typedef struct
+	{
+		float value;
+		string name;
+	}valStruct;
+	
+	valStruct valList[30];
+	
+	string line;
+    ifstream file ("EntropyKickerINI.txt",  std::ifstream::in);
+    int index = 0;
+    while ( getline (file,line) )
+       {
+    		
+    		char *ptr = strtok((char*)(line.data()), (" ="));
+    		while (ptr != NULL && index <= 30)
+    		  {
+    		    valList[index].name.assign(ptr);
+    		    ptr = strtok (NULL, " =");
+    		    valList[index].value = atof(ptr);
+    		    index++;
+    		  }
+       }
+    file.close();
+    
+    for(int x = 0;x<30;x++)
+    {
+    	if (valList[x].name.compare("PullTime")== 0)
+    	{	
+    		pullTimer = valList[x].value;
+    		break;
+    	}
+    }
+    for(int x = 0;x<30;x++)
+    {
+       	if (valList[x].name.compare("UnwindTime")== 0)
+       	{
+       		unwindTimer = valList[x].value;
+       		break;
+       	}
+    }
+	for(int x = 0;x<30;x++)
+    {
+       	if (valList[x].name.compare("INITIALTIME")== 0)
+       	{
+       		INITIALTIME = valList[x].value;
+       		break;
+       	}
+    }
 	return true;
 }
 
