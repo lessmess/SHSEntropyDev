@@ -4,10 +4,21 @@
 #include "EntropyDrive.h"
 #include "EntropyDriveTable.h"
 #include <math.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 #define DEADZONE 1
 
-const double DEAD_ZONE_MAX = .15;
+
+double DEAD_ZONE_MAX = .15;
+
+float CompMoveValuePlus=0.99;
+float CompMoveValueMinus=0.60;
+float CompRotateValuePlus=0.99;
+float CompRotateValueMinus=0.99;
+
+double dampValue=0.05;
 
 
 bool EntropyDrive::Initialize () 
@@ -22,6 +33,79 @@ bool EntropyDrive::Initialize ()
 			MotorDriveRight1,
 			MotorDriveRight2 );
 	
+	typedef struct
+	{
+		float value;
+		string name;
+	}valStruct;
+	
+	valStruct valList[30];
+	
+	string line;
+    ifstream file ("EntropyDriveINI.txt",  std::ifstream::in);
+    int index = 0;
+    while ( getline (file,line) )
+       {
+    		
+    		char *ptr = strtok((char*)(line.data()), (" ="));
+    		while (ptr != NULL && index <= 30)
+    		  {
+    		    valList[index].name.assign(ptr);
+    		    ptr = strtok (NULL, " =");
+    		    valList[index].value = atof(ptr);
+    		    index++;
+    		  }
+       }
+    file.close();
+    
+    for(int x = 0;x<30;x++)
+    {
+    	if (valList[x].name.compare("DEAD_ZONE_MAX")== 0)
+    	{	
+    		DEAD_ZONE_MAX = valList[x].value;
+    		break;
+    	}
+    }
+    for(int x = 0;x<30;x++)
+	{
+        if (valList[x].name.compare("CompMoveValuePlus")== 0)
+        {
+        	CompMoveValuePlus = valList[x].value;
+        	break;
+        }
+    }
+    for(int x = 0;x<30;x++)
+    {
+       	if (valList[x].name.compare("CompMoveValueMinus")== 0)
+       	{
+       		CompMoveValueMinus = valList[x].value;
+       		break;
+       	}
+    }
+	for(int x = 0;x<30;x++)
+    {
+       	if (valList[x].name.compare("CompRotateValuePlus")== 0)
+       	{
+       		CompRotateValuePlus = valList[x].value;
+       		break;
+       	}
+    }
+	for(int x = 0;x<30;x++)
+    {
+       	if (valList[x].name.compare("CompRotateValueMinus")== 0)
+       	{
+       		CompRotateValueMinus = valList[x].value;
+       		break;
+       	}
+    }
+	for(int x = 0;x<30;x++)
+    {
+       	if (valList[x].name.compare("dampValue")== 0)
+       	{
+       		dampValue = valList[x].value;
+       		break;
+       	}
+    }
 	return true;
 }
 		
@@ -67,10 +151,7 @@ bool EntropyDrive::DriveRobotTrig(float MoveValue, float RotateValue){
 	float AbsMoveValue = 0;
 	float AbsRotateValue = 0;
 
-	float CompMoveValuePlus=0.99;
-	float CompMoveValueMinus=0.60;
-	float CompRotateValuePlus=0.99;
-	float CompRotateValueMinus=0.99;
+
 
 	//Normalize Joystick inputs
 	if (MoveValue >= 0.0)
@@ -370,7 +451,7 @@ double EntropyDrive::addDeadZone (double Value)
 float EntropyDrive::moveValueDampen (float moveValue)
 {
 
-	double dampValue=0.05;
+	
 
 	if ((moveValue - previousValue > -0.1 and moveValue - previousValue < 0.1) and moveValue == 0){
 		previousValue = 0;
