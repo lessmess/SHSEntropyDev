@@ -1,7 +1,6 @@
 #ifndef __KICKER__
 #define __KICKER__
 
-#define INITIALTIME 50
 #define UNWINDTIME 65
 #define PULLTIME 250
 #define DISENGAGED 1
