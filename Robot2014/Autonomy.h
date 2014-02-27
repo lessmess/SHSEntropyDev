@@ -7,6 +7,13 @@
 #include "IODefinitions.h"
 #include <vector>
 
+
+// luminescence of RGB
+  const float RED_LUM = 0.3489f;
+  const float GREEN_LUM = 0.6570f;
+  const float BLUE_LUM = 0.0f;
+
+  const uint32_t NUM_HEADER_BYTES = 54;
 struct Vec2
 {
   Vec2() : x(0.0), y(0.0) {}
@@ -14,6 +21,25 @@ struct Vec2
   
   double x;
   double y;
+};
+
+struct rgbTrip
+{
+	uint32_t clusterId;
+	uint32_t xPos;
+	uint32_t yPos;
+
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
+	uint8_t flag;
+};
+
+struct cluster
+{
+	std::vector<rgbTrip> pixels;
+
+	uint32_t id;
 };
 
 class AutonomousState
@@ -46,6 +72,28 @@ private:
   double m_msToSpendIdle;
 };
 
+class DecisionState: public AutonomousState
+{
+public:
+  // Default c'tor will set idle to run indefinitely unless setTimeToSpendIdle mutator is used
+  DecisionState();
+  DecisionState(EntropyDrive& _entDrive);
+
+  bool Update(double _dt);
+  void Init() {}
+  int Camera();
+    uint32_t readFileSize(std::ifstream& _ifl);
+    uint32_t readDimension(std::ifstream& _ifl, uint32_t _offset);
+    void convertToGrayscale(rgbTrip**& _pixArray, uint32_t _xSize, uint32_t _ySize);
+  
+private:
+
+  // Pointer to our EntropyDrive
+  EntropyDrive* m_entDrive;
+  AxisCamera* camera;
+    int leftOrRight;
+};
+
 class PositionState : public AutonomousState
 {
 public:
@@ -55,6 +103,7 @@ public:
 
   bool Update(double _dt);
   void Init();
+ 
   
 private:
   // Pointer to our EntropyDrive
@@ -81,6 +130,7 @@ private:
   // Distance traveled since the last frame
   double m_deltaLeftDist;
   double m_deltaRightDist;
+  
 };
 
 class RotationState : public AutonomousState
@@ -129,12 +179,15 @@ public:
   virtual char* GetFeedback(){ return "x"; }
 	
   void Update(double _dt);
+ 
+  
  private:
-
   AutonomousState* m_currentState;
   std::vector<AutonomousState*> m_statesToComplete;
   Encoder* m_leftEncoder;
   Encoder* m_rightEncoder;
+  AnalogChannel* m_analogChan;
+ 
 };
 
 #endif
