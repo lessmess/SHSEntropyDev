@@ -37,7 +37,8 @@ public:
 	
 	enum {
 		RANGE_FINDER = 4,
-		BALL_POSESSION_DETECTOR = 2
+		BALL_POSESSION_DETECTOR = 2,
+		AUTONOMOUS_SCENARIO_STATE = 6,
 	}AnalogIO;
 	
 	enum  {
