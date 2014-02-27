@@ -81,6 +81,8 @@ public:
 		ds = DriverStationLCD::GetInstance();
 		
 		m_turnSpeed=1.0;
+		
+		AxisCamera* axisCam = &AxisCamera::GetInstance();
 		printf("EntropyBot14 Constructor Completed\n");
 	}
 	
@@ -113,20 +115,20 @@ public:
 	void AutonomousInit(void) 
 	{
 		m_autoPeriodicLoops = 0;				// Reset the loop counter for autonomous mode
-		
-        	MyAutoRobot = new Autonomy(MyRobot);
-        	
-        	MyCameraControl.SetCameraPositionAuto();
-        	
-        	Arm.SetAutoInitialState();
+		Arm.SetAutoInitialState();
+		MyAutoRobot = new Autonomy(MyRobot);
+		MyCameraControl.SetCameraPositionAuto();
+		HSLImage* picture = AxisCamera::GetInstance().GetImage();
+	    picture->Write("potato3.bmp");
 	}
 
 	void TeleopInit(void) 
 	{
 		m_telePeriodicLoops = 0;				// Reset the loop counter for teleop mode
 		m_dsPacketsReceivedInCurrentSecond = 0;	// Reset the number of dsPackets in current second
-		
-        	MyCameraControl.SetCameraPositionTelop();
+
+		Arm.SetAutoInitialState();
+		MyCameraControl.SetCameraPositionTelop();
 	}
 
 	/********************************** Periodic Routines *************************************/
@@ -157,7 +159,7 @@ public:
 		{
 			MyKicker.Kick(true, false);
 		}
-		else if(autoKicked == false)
+		else if(autoKicked == false && GetClock() - autoEpoch > 8.0)
 		{
 			MyKicker.Kick(false, true);
 
