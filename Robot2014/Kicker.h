@@ -3,7 +3,7 @@
 
 #define INITIALTIME 50
 #define UNWINDTIME 65
-#define PULLTIME 215
+#define PULLTIME 250
 #define DISENGAGED 1
 #define ENGAGED 0
 #define LOCKED 0
