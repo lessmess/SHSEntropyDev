@@ -46,10 +46,10 @@ void Kicker::Kick(bool pull, bool kick)
 			}
 			break;
 		case pulling:
-			if(pullTimer > 0)
+			if(pullTimer > 0 || (KickerLatchedSense->Get() != LOCKED))
 				{
 					pullTimer--;
-					PullMotor->Set(0.6);
+					PullMotor->Set(0.8);
 				}
 			else// if ((pullTimer <= 0) || (KickerLatchedSense->Get() == LOCKED))
 				{
