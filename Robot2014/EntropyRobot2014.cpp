@@ -132,6 +132,7 @@ public:
 		m_autoPeriodicLoops = 0;				// Reset the loop counter for autonomous mode
 		Arm.SetAutoInitialState();
 		MyAutoRobot = new Autonomy(MyRobot, m_Gyro);
+ -		MyCameraControl.SetCameraPositionAuto();
 	}
 
 	void TeleopInit(void) 
@@ -174,7 +175,7 @@ public:
 			
 			MyAutoRobot->Update(GetClock() - autoEpoch);
 	
-		/*	if (MyKicker.getKickerState() != Kicker::readytoshoot && autoKicked == false)
+			if (MyKicker.getKickerState() != Kicker::readytoshoot && autoKicked == false)
 			{
 				MyKicker.Kick(true, false);
 			}
@@ -183,7 +184,7 @@ public:
 				MyKicker.Kick(false, true);
 	
 				autoKicked = true;
-			}*/
+			}
 		}
 	}
 
