@@ -1,5 +1,8 @@
 #include "Kicker.h"
 #include "IODefinitions.h"
+#include <iostream>
+#include <fstream>
+#include <string>
 
 Kicker::Kicker() {
 	
@@ -83,8 +86,10 @@ void Kicker::Cleanup()
 
 void Kicker::Kick(bool pull, bool kick)
 {
+	//DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line3, "Kill Switch: %i", KickerLatchedSense->Get());
+    //DriverStationLCD::GetInstance()->UpdateLCD();
 	switch(kickerState)
-	{
+	{				
 	    default: 
 		case idle: 
 			
@@ -99,10 +104,12 @@ void Kicker::Kick(bool pull, bool kick)
 			}
 			break;
 		case pulling:
-			if(pullTimer > 0 || (KickerLatchedSense->Get() != LOCKED))
+			if(pullTimer > 0 && (KickerLatchedSense->Get() != LOCKED))
 				{
 					pullTimer--;
 					PullMotor->Set(0.8);
+					DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Kicker: %s %d", "Pulling",pullTimer);
+					DriverStationLCD::GetInstance()->UpdateLCD();
 				}
 			else// if ((pullTimer <= 0) || (KickerLatchedSense->Get() == LOCKED))
 				{

@@ -3,7 +3,7 @@
 
 #define UNWINDTIME 65
 #define PULLTIME 250
-#define DISENGAGED 1
+#define DISENGAGED 0
 #define ENGAGED 0
 #define LOCKED 0
 #define RELEASED 1
@@ -25,6 +25,7 @@ private:
 	int pistonTimer;
 	int pullTimer;
 	int unwindTimer;
+	float INITIALTIME;
 	
 	DigitalInput * KickerLatchedSense;
 public:

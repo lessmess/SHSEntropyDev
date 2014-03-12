@@ -23,7 +23,7 @@ void EntropyCamera::SetCameraPositionTelop()
 	
 void EntropyCamera::SetCameraPositionAuto()
 {
-	CameraServo->SetAngle(60);
+	CameraServo->SetAngle(65);
 }
 
 

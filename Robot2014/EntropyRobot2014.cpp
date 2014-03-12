@@ -12,6 +12,7 @@
 #include "EntropyCamera.h"
 #include "EntropyRangeFinder.h"
 #include "Autonomy.h"
+#include "Gyro.h"
 
 
 class EntropyRobot2014 : public IterativeRobot
@@ -46,11 +47,12 @@ class EntropyRobot2014 : public IterativeRobot
 	UINT32 m_telePeriodicLoops;
 	
 	bool autoKicked;
-	
+	bool didOnce;
 	//Creating a test "InfraredSensor", by way of using an Autonomous Selector Switch
 	EntropyInfraredSensor InfraredSensor;
 	
-	
+	Gyro* m_Gyro;
+
 public:
 /**
  * Constructor for this "EntropyRobotDrive2014" Class.
@@ -61,7 +63,17 @@ public:
 
 		// Establish Hardware IO Controllers
 		DriveStick = new EntropyJoystick(IODefinitions::USB_PORT_1);
-		GameStick = new EntropyJoystick(IODefinitions::USB_PORT_2);			
+		GameStick = new EntropyJoystick(IODefinitions::USB_PORT_2);		
+	    
+		AxisCamera* axisCam = &AxisCamera::GetInstance();
+		
+		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Don't Start Yet");
+				 			 DriverStationLCD::GetInstance()->UpdateLCD();
+		 m_Gyro = new Gyro(1);    //This takes like 5 or 6 seconds... sorry
+		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Ready");
+		 			 DriverStationLCD::GetInstance()->UpdateLCD();
+		 m_Gyro->SetSensitivity(.00577);
+		
 		MyCompressor.Initialize();
 		MyRangeFinder.Initialize();	
 		InfraredSensor.Initialize();
@@ -77,13 +89,16 @@ public:
 		m_telePeriodicLoops = 0;
 		
 		autoKicked = false;
-
+		didOnce = false;
+		
 		ds = DriverStationLCD::GetInstance();
 		
 		m_turnSpeed=1.0;
 		
-		AxisCamera* axisCam = &AxisCamera::GetInstance();
+		
 		printf("EntropyBot14 Constructor Completed\n");
+
+		MyCameraControl.SetCameraPositionAuto();
 	}
 	
 	
@@ -116,10 +131,7 @@ public:
 	{
 		m_autoPeriodicLoops = 0;				// Reset the loop counter for autonomous mode
 		Arm.SetAutoInitialState();
-		MyAutoRobot = new Autonomy(MyRobot);
-		MyCameraControl.SetCameraPositionAuto();
-		HSLImage* picture = AxisCamera::GetInstance().GetImage();
-	    picture->Write("potato3.bmp");
+		MyAutoRobot = new Autonomy(MyRobot, m_Gyro);
 	}
 
 	void TeleopInit(void) 
@@ -127,7 +139,6 @@ public:
 		m_telePeriodicLoops = 0;				// Reset the loop counter for teleop mode
 		m_dsPacketsReceivedInCurrentSecond = 0;	// Reset the number of dsPackets in current second
 
-		Arm.SetAutoInitialState();
 		MyCameraControl.SetCameraPositionTelop();
 	}
 
@@ -148,26 +159,34 @@ public:
 
 	void AutonomousPeriodic(void) 
 	{
-		
 		m_autoPeriodicLoops++;
 		
 		static double autoEpoch = GetClock();
 		
-		MyAutoRobot->Update(GetClock() - autoEpoch);
-
-		if (MyKicker.getKickerState() != Kicker::readytoshoot && autoKicked == false)
+		if( GetClock() - autoEpoch > 0.5)
 		{
-			MyKicker.Kick(true, false);
-		}
-		else if(autoKicked == false && GetClock() - autoEpoch > 8.0)
-		{
-			MyKicker.Kick(false, true);
-
-			autoKicked = true;
+			if (didOnce == false)
+			{
+				HSLImage *image = AxisCamera::GetInstance().GetImage();
+				image->Write("potato3.bmp");
+				didOnce = true;
+			}
+			
+			MyAutoRobot->Update(GetClock() - autoEpoch);
+	
+		/*	if (MyKicker.getKickerState() != Kicker::readytoshoot && autoKicked == false)
+			{
+				MyKicker.Kick(true, false);
+			}
+			else if(autoKicked == false && GetClock() - autoEpoch > 7.6)
+			{
+				MyKicker.Kick(false, true);
+	
+				autoKicked = true;
+			}*/
 		}
 	}
 
-	
 	void TeleopPeriodic(void) 
 	{
 		// increment the number of teleop periodic loops completed
@@ -189,7 +208,7 @@ public:
 		Arm.BeltEnable(GameStick);
 
 		
-	} // TeleopPeriodic(void)
+	} // TeleopPeriodic(void) 
 			
 };
 

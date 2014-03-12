@@ -18,25 +18,6 @@
 		<nature>org.eclipse.cdt.core.ccnature</nature>
 	</natures>
 	<linkedResources>
-		<link>
-			<name>AcquisitionArms.cpp</name>
-			<type>1</type>
-			<locationURI>PROJECT_DIR/AcquisitionArms.cpp</locationURI>
-		</link>
-		<link>
-			<name>AcquisitionArms.h</name>
-			<type>1</type>
-			<locationURI>PROJECT_DIR/AcquisitionArms.h</locationURI>
-		</link>
-		<link>
-			<name>EntropyInfraredSensor.cpp</name>
-			<type>1</type>
-			<locationURI>PROJECT_DIR/EntropyInfraredSensor.cpp</locationURI>
-		</link>
-		<link>
-			<name>EntropyInfraredSensor.h</name>
-			<type>1</type>
-			<locationURI>PROJECT_DIR/EntropyInfraredSensor.h</locationURI>
-		</link>
+	
 	</linkedResources>
 </projectDescription>

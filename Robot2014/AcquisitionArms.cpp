@@ -3,6 +3,10 @@
 #include "EntropyInfraredSensor.h"
 #include "IODefinitions.h"
 
+const double seconds=1.4;
+const double extendCounterStart=(seconds*1000)/50;
+double extendCounter;
+
 AcquisitionArms::AcquisitionArms() {
 
 }
@@ -50,13 +54,23 @@ void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT)) {
+		 extendCounter=0;
 		MotorExtender->Set(0.75);
 	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_IN)) {
+		 extendCounter=0;
+		MotorExtender->Set(-0.75);
+	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN)
+			and extendCounter==0){
+		extendCounter=extendCounterStart;
+		MotorExtender->Set(-0.75);
+	} else if (extendCounter>0){
+		extendCounter--;
 		MotorExtender->Set(-0.75);
 	} else {
 		MotorExtender->Set(0.0);
 	}
 }
+
 void AcquisitionArms::BeltEnable(EntropyJoystick * GameStick)
 {
 	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN)) {

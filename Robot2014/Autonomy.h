@@ -6,6 +6,8 @@
 #include "EntropyDrive.h"
 #include "IODefinitions.h"
 #include <vector>
+#include "Gyro.h"
+
 
 
 // luminescence of RGB
@@ -138,7 +140,7 @@ class RotationState : public AutonomousState
 public:
   // Default c'tor shouldn't be used. A pointer to the EntropyDrive is needed.
   RotationState();
-  RotationState(EntropyDrive& _entDrive, Encoder* _leftEncoder, Encoder* _rightEncoder, double _targetRotation);
+  RotationState(EntropyDrive& _entDrive, Encoder* _leftEncoder, Encoder* _rightEncoder, double _targetRotation, Gyro *_Gyro);
 
   bool Update(double _dt);
   void Init();
@@ -152,11 +154,11 @@ private:
   
   // Number of degrees of rotation required before completion of this state (used in conjunction with m_targetPos)
   double m_targetRotation;
-  // TODO
   double m_rotation;
   // Distance traveled since the last frame
   double m_deltaLeftDist;
   double m_deltaRightDist;
+  Gyro *m_Gyro;
 };
 
 class ShootState : public AutonomousState
@@ -170,7 +172,7 @@ class Autonomy : public EntropySubsystemTemplate
 {
 public:
   Autonomy();
-  Autonomy(EntropyDrive& _entDrive);
+  Autonomy(EntropyDrive& _entDrive, Gyro *_Gyro);
 
   void StartNextState();
 
@@ -179,6 +181,7 @@ public:
   virtual char* GetFeedback(){ return "x"; }
 	
   void Update(double _dt);
+  Gyro *m_Gyro;
  
   
  private:

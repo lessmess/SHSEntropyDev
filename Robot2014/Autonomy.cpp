@@ -96,7 +96,7 @@ PositionState::PositionState(EntropyDrive& _entDrive, Vec2 _targetPos, Encoder* 
   m_currentPos.x = 0.0;
   m_currentPos.y = 0.0;
   m_targetRotation = _targetRotation;
-  m_forwardSpeed = -0.15;
+  m_forwardSpeed = -0.30;
   m_rotation = 0.0;
   m_rotCorrection = 0.0;
   m_scalingFactor = 0.2;
@@ -162,10 +162,10 @@ RotationState::RotationState()
   m_deltaRightDist = 0.0;
 }
 
-RotationState::RotationState(EntropyDrive& _entDrive, Encoder* _leftEncoder, Encoder* _rightEncoder,  double _targetRotation)
+RotationState::RotationState(EntropyDrive& _entDrive, Encoder* _leftEncoder, Encoder* _rightEncoder,  double _targetRotation, Gyro *_Gyro)
 {
   m_entDrive = &_entDrive;	 
-
+  m_Gyro = _Gyro;
   m_leftEncoder = _leftEncoder;
   m_rightEncoder = _rightEncoder;
   
@@ -173,6 +173,8 @@ RotationState::RotationState(EntropyDrive& _entDrive, Encoder* _leftEncoder, Enc
   m_rotation = 0.0;
   m_deltaLeftDist = 0.0;
   m_deltaRightDist = 0.0;
+  
+  
 }
 
 void RotationState::Init()
@@ -183,55 +185,26 @@ void RotationState::Init()
 }
 
 bool RotationState::Update(double _dt)
-{
-	static double rotationEpoch = _dt;
-	if (g_whatsHot == 1)
-	{
-		double leftEncDist = m_leftEncoder->GetDistance();
-		leftEncDist *= -1.0;
-		m_deltaLeftDist = leftEncDist - s_lastLeftDist;
-		 m_rotation += (m_deltaLeftDist);
-		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Rotating");
-		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line4, "Last Dist: %f", s_lastLeftDist);
-		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Left Dist: %f", leftEncDist);
-		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Rotation: %f", m_rotation);
-		 DriverStationLCD::GetInstance()->UpdateLCD();
-		 m_entDrive->DriveRobot(0, -0.3);
-		 s_lastLeftDist = leftEncDist;
-		 return (_dt - rotationEpoch > 0.2);
-		// return m_rotation * 1.0 > m_targetRotation;
-	}
-	else if (g_whatsHot == -1)
-		{
-			double rightEncDist = m_rightEncoder->GetDistance();
-
-			m_deltaRightDist = rightEncDist - s_lastRightDist;
-			 m_rotation += (m_deltaRightDist);
-			 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Rotating");
-			 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line4, "Last Dist: %f", s_lastRightDist);
-			 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Right Dist: %f", rightEncDist);
-			 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Rotation: %f", m_rotation);
-			 DriverStationLCD::GetInstance()->UpdateLCD();
-			 m_entDrive->DriveRobot(0, 0.3);
-			 s_lastRightDist = rightEncDist;
-			 return (_dt - rotationEpoch > 0.2);
-		}
-	else//(g_whatsHot == 0)
-			{
-				double rightEncDist = m_rightEncoder->GetDistance();
-
-				m_deltaRightDist = rightEncDist - s_lastRightDist;
-				 m_rotation += (m_deltaRightDist);
-				 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Rotating");
-				 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line4, "Last Dist: %f", s_lastRightDist);
-				 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Right Dist: %f", rightEncDist);
-				 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Rotation: %f", m_rotation);
-				 DriverStationLCD::GetInstance()->UpdateLCD();
-				 m_entDrive->DriveRobot(0, 0.3);
-				 s_lastRightDist = rightEncDist;
-				 return (_dt - rotationEpoch > 0.2);
-			}
+{	
+	static float rotationEpoch = m_Gyro->GetAngle();
 	
+	if (g_whatsHot == 1)
+		m_entDrive->DriveRobot(0, -0.3);
+	
+	else if (g_whatsHot == -1 || g_whatsHot == 0)
+		m_entDrive->DriveRobot(0, 0.3);	
+	 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line3, "Voltage : %f",m_Gyro->GetRate());
+     DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line2, "Angle : %f", m_Gyro->GetAngle());
+	 DriverStationLCD::GetInstance()->UpdateLCD();
+	
+	if (g_whatsHot == -1)
+	{
+		return (m_Gyro->GetAngle() - rotationEpoch >=  m_targetRotation);//(m_rotation += m_Gyro->GetAngle()) <= m_targetRotation;
+	}
+	if (g_whatsHot == 1)
+		{
+			return (m_Gyro->GetAngle() - rotationEpoch <=  -m_targetRotation);//(m_rotation += m_Gyro->GetAngle()) <= m_targetRotation;
+		}
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -245,11 +218,12 @@ Autonomy::Autonomy()
 {
 }
 
-Autonomy::Autonomy(EntropyDrive& _entDrive)
+Autonomy::Autonomy(EntropyDrive& _entDrive, Gyro *_Gyro)
 {
 	m_analogChan = new AnalogChannel (IODefinitions::AUTONOMOUS_SCENARIO_STATE);
-	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line2, "Auto Voltage: %f", m_analogChan->GetVoltage());
-	DriverStationLCD::GetInstance()->UpdateLCD();
+	
+	m_Gyro = _Gyro;
+	
 	// TODO: Might not want it in feet
 	m_leftEncoder = new Encoder(1, 1, 1, 2, false, Encoder::k4X);
 	m_rightEncoder = new Encoder(1, 3, 1, 4, true, Encoder::k4X);
@@ -258,25 +232,29 @@ Autonomy::Autonomy(EntropyDrive& _entDrive)
 	m_leftEncoder->SetPIDSourceParameter(Encoder::kRate);
 	m_rightEncoder->SetDistancePerPulse(PULSE_RATIO / 12.0);
 	m_rightEncoder->SetPIDSourceParameter(Encoder::kRate);
+	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "2");
+			 DriverStationLCD::GetInstance()->UpdateLCD();
 					 
 	m_leftEncoder->Start();
 	m_rightEncoder->Start();
+
 	
 	if(m_analogChan->GetVoltage() < 0.35)
 	{
 		  m_statesToComplete.push_back(new IdleState(_entDrive, 50000000));	
-		  m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 0.15));	
-		  m_statesToComplete.push_back(new DecisionState(_entDrive));	
-		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(10, 0), m_leftEncoder, m_rightEncoder));
+		  m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 14, m_Gyro));	
+		  m_statesToComplete.push_back(new DecisionState(_entDrive));
+		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(9.5, 0), m_leftEncoder, m_rightEncoder));
 	}
 	else
 	{
 		m_statesToComplete.push_back(new IdleState(_entDrive, 50000000));
-		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(8, 0), m_leftEncoder, m_rightEncoder));
+		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(9.0, 0), m_leftEncoder, m_rightEncoder));
 	}
 
   m_currentState = m_statesToComplete.back();
   m_currentState->Init();
+  
 }
 
 void Autonomy::StartNextState()
@@ -532,7 +510,7 @@ int DecisionState::Camera()
 		{
 			for (int x = 0; x < xDim; x++)
 			{
-				if (gpixels[x][y].red > 230 && gpixels[x][y].blue > 230 && gpixels[x][y].green > 230)
+				if (gpixels[x][y].red > 230 && gpixels[x][y].blue > 230 && gpixels[x][y].green > 230 && y >= 25 && y <= 90)
 				{
 					gpixels[x][y].red = 255;
 					gpixels[x][y].green = 255;
@@ -552,7 +530,7 @@ int DecisionState::Camera()
 		for (int y = 0; y < yDim; y++){
 			for (int x = 0; x < xDim; x++)
 			{
-				if (gstat[x][y] == 1 && stat[x][y] == 1)
+				if (gstat[x][y] == 1)
 				{
 				
 					if (x < xDim / 2)

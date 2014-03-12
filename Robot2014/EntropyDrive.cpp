@@ -132,7 +132,11 @@ bool EntropyDrive::DriveRobot(float MoveValue, float RotateValue){
 
 	LeftMotors = left_scale(RotateValue, MoveValue, Rotate);  
 	RightMotors = right_scale(RotateValue, MoveValue, Rotate);
-
+	
+	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Drive L: %f", LeftMotors);
+	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Drive R: %f", RightMotors);
+	DriverStationLCD::GetInstance()->UpdateLCD();
+	
 	//Command motors
 	wpiDrive->SetLeftRightMotorOutputs( LeftMotors, RightMotors );
 
