@@ -7,8 +7,9 @@ const double seconds=1.4;
 const double extendCounterStart=(seconds*1000)/50;
 double extendCounter;
 
-AcquisitionArms::AcquisitionArms() {
 
+AcquisitionArms::AcquisitionArms() {
+	
 }
 
 bool AcquisitionArms::Initialize() 
@@ -18,15 +19,20 @@ bool AcquisitionArms::Initialize()
 	InfraredSensor.Initialize();
 	MotorBelt = new Victor(IODefinitions::MOTOR_ACQUISITION_BELT);
 	MotorExtender = new Jaguar(IODefinitions::MOTOR_ACQUISITION_EXTENDER);
+	ArmUp = true; 
+	CradleUp = false;
 
 	return true;
 }
 void AcquisitionArms::SetAutoInitialState()
 {
+	CradleUp = true;
 	lowerSolenoid->Set(1);
 }
 void AcquisitionArms::Cleanup() 
 {
+	ArmUp = false; 
+	CradleUp = false;
 	upperSolenoid->Set(false);
 	lowerSolenoid->Set(false);
 	MotorExtender->Set(0.0);
@@ -39,6 +45,7 @@ void AcquisitionArms::UpperVerticalPos(EntropyJoystick * GameStick)
 			^ GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN))
 	{
 		upperSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP));
+		ArmUp = (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP) != 1);
 	}
 	
 }
@@ -48,6 +55,7 @@ void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 			^ GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP))
 	{
 		lowerSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP));
+		CradleUp = (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP) == 1);
 	}
 }
 

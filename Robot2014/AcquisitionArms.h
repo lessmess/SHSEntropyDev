@@ -18,6 +18,8 @@ private:
 	EntropyInfraredSensor InfraredSensor;
 	Victor * MotorBelt;
 	Jaguar * MotorExtender;
+	
+	bool ArmUp,CradleUp;
 
 public:
 	AcquisitionArms();
@@ -37,6 +39,11 @@ public:
 	void Extend(EntropyJoystick * GameStick);
 	
 	void BeltEnable(EntropyJoystick * GameStick);
+	
+	bool IsArmUp(){ return ArmUp; }
+	
+	bool IsCradleUp() { return CradleUp; } 
+	
 };
 
 #endif

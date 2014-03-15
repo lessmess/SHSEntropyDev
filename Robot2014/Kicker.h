@@ -53,6 +53,9 @@ public:
 	char * GetFeedback();
 	
 	void Kicker::TestWich( bool RotateOneWay, bool RotateAnotherWay);
+	
+	void Kicker::TestKicker( bool SetLatch, bool SetKick);
 
+	void Kicker::TestDisplayLatchSwitch();
 };
 #endif

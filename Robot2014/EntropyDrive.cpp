@@ -133,9 +133,9 @@ bool EntropyDrive::DriveRobot(float MoveValue, float RotateValue){
 	LeftMotors = left_scale(RotateValue, MoveValue, Rotate);  
 	RightMotors = right_scale(RotateValue, MoveValue, Rotate);
 	
-	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Drive L: %f", LeftMotors);
-	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Drive R: %f", RightMotors);
-	DriverStationLCD::GetInstance()->UpdateLCD();
+	//DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Drive L: %f", LeftMotors);
+	//DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Drive R: %f", RightMotors);
+	//DriverStationLCD::GetInstance()->UpdateLCD();
 	
 	//Command motors
 	wpiDrive->SetLeftRightMotorOutputs( LeftMotors, RightMotors );
@@ -449,7 +449,8 @@ double EntropyDrive::addDeadZone (double Value)
 	}
 
 #endif	
-	return Value;}
+	return Value;
+}
 
 
 float EntropyDrive::moveValueDampen (float moveValue)
@@ -475,4 +476,54 @@ float EntropyDrive::moveValueDampen (float moveValue)
 	return moveValue;	
 
 
-};
+}
+
+void EntropyDrive::DriveTrainTest( ) 
+{ 
+
+	CANJaguar * Motors[4] = {MotorDriveLeft1, MotorDriveLeft2, MotorDriveRight1, MotorDriveRight2 };
+	char * Motors_Names[4] = {"MotorLeft1", "MotorLeft2", "MotorRight1", "MotorRight2" };
+	int Motors_Values[4] = { IODefinitions::MOTOR_DRIVE_LEFT_1,
+			IODefinitions::MOTOR_DRIVE_LEFT_2,
+			IODefinitions::MOTOR_DRIVE_RIGHT_1,
+			IODefinitions::MOTOR_DRIVE_RIGHT_2
+	};
+
+	UINT8 syncGroup = 0x80; 
+	for ( int i = 0; i < 4; i++ )
+	{
+		DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1,"Motor: %s",
+				 Motors_Names[i] );
+		DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line2,"Jaguar: %d", Motors_Values[i]);
+		DriverStationLCD::GetInstance()->UpdateLCD();
+		Motors[i]->Set( 0.6 ,syncGroup);
+		CANJaguar::UpdateSyncGroup(syncGroup);
+		Wait( 3 );
+		Motors[i]->Set( 0.0 , syncGroup);
+		CANJaguar::UpdateSyncGroup(syncGroup);
+		Wait( 1 );
+	}
+}
+
+void EntropyDrive::InitEncoderTest()
+{
+	m_leftEncoderTest = new Encoder(1, 1, 1, 2, false, Encoder::k4X);
+	m_rightEncoderTest = new Encoder(1, 3, 1, 4, true, Encoder::k4X);
+		 
+	m_leftEncoderTest->SetDistancePerPulse(PULSE_RATIO / 12.0);
+	m_leftEncoderTest->SetPIDSourceParameter(Encoder::kRate);
+	m_rightEncoderTest->SetDistancePerPulse(PULSE_RATIO / 12.0);
+	m_rightEncoderTest->SetPIDSourceParameter(Encoder::kRate);
+							 
+	m_leftEncoderTest->Start();
+	m_rightEncoderTest->Start();
+
+}
+	
+	
+void EntropyDrive::DisplayEncodersTestDSLine5Line6()
+{
+	  DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Left Dist: %f", m_leftEncoderTest->GetDistance());
+	  DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Right Dist: %f", m_rightEncoderTest->GetDistance());
+	  DriverStationLCD::GetInstance()->UpdateLCD();
+}

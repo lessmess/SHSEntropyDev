@@ -15,7 +15,8 @@ private:
 	};
 	
 	double previousValue;
-	
+	Encoder * m_leftEncoderTest;
+	Encoder * m_rightEncoderTest;
 	RobotDrive * wpiDrive; 
 	
 	//The robot drive system motors
@@ -49,6 +50,12 @@ public:
 	bool DriveRobot(float MoveValue, float RotateValue);
 	
 	bool DriveRobotTrig(float MoveValue, float RotateValue);
+	
+	void DriveTrainTest( );
+	
+	void InitEncoderTest();
+	
+	void DisplayEncodersTestDSLine5Line6();
 	
 };
 

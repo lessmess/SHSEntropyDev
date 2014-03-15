@@ -88,6 +88,8 @@ void Kicker::Kick(bool pull, bool kick)
 {
 	//DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line3, "Kill Switch: %i", KickerLatchedSense->Get());
     //DriverStationLCD::GetInstance()->UpdateLCD();
+	
+	
 	switch(kickerState)
 	{				
 	    default: 
@@ -165,16 +167,47 @@ void Kicker::TestWich( bool RotateOneWay, bool RotateAnotherWay )
 	} 
 	else if ( RotateOneWay )
 	{   Piston_Shifter->Set(ENGAGED);
-		PullMotor->Set(0.5);;
+		PullMotor->Set(0.8);
 	} 
 	else if ( RotateAnotherWay ){
 		Piston_Shifter->Set(ENGAGED);
-		PullMotor->Set(-0.5);
+		PullMotor->Set(-0.8);
 	}
 	else {
 		PullMotor->Set(0.0);
 	}
 }
+
+
+void Kicker::TestKicker( bool SetLatch, bool SetKick)
+{
+	if ( SetLatch && SetKick )
+		{
+			 
+		} 
+		else if ( SetLatch )
+		{   
+			Piston_Trigger->Set(LOCKED);
+		} 
+		else if ( SetKick ){
+			Piston_Trigger->Set(RELEASED);
+		}
+		else 
+		{
+			
+		}
+
+}
+
+void Kicker::TestDisplayLatchSwitch()
+{
+	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line3, "Kill Switch: %i", KickerLatchedSense->Get());
+	DriverStationLCD::GetInstance()->UpdateLCD();
+}	
+	
+
+//DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line3, "Kill Switch: %i", KickerLatchedSense->Get());
+    //DriverStationLCD::GetInstance()->UpdateLCD();
 
 char * Kicker::GetFeedback(){ return NULL;}
 

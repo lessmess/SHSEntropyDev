@@ -67,11 +67,11 @@ public:
 	    
 		AxisCamera* axisCam = &AxisCamera::GetInstance();
 		
-		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Don't Start Yet");
+		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Don't Start Yet");
 				 			 DriverStationLCD::GetInstance()->UpdateLCD();
 		 m_Gyro = new Gyro(1);    //This takes like 5 or 6 seconds... sorry
-		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Ready");
-		 			 DriverStationLCD::GetInstance()->UpdateLCD();
+		 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Ready");
+		 DriverStationLCD::GetInstance()->UpdateLCD();
 		 m_Gyro->SetSensitivity(.00577);
 		
 		MyCompressor.Initialize();
@@ -130,9 +130,10 @@ public:
 	void AutonomousInit(void) 
 	{
 		m_autoPeriodicLoops = 0;				// Reset the loop counter for autonomous mode
- -		MyCameraControl.SetCameraPositionAuto();
+		MyCameraControl.SetCameraPositionAuto();
 		Arm.SetAutoInitialState();
 		MyAutoRobot = new Autonomy(MyRobot, m_Gyro);
+		CleanDSDisplay();
 	}
 
 	void TeleopInit(void) 
@@ -141,8 +142,14 @@ public:
 		m_dsPacketsReceivedInCurrentSecond = 0;	// Reset the number of dsPackets in current second
 
 		MyCameraControl.SetCameraPositionTelop();
+		CleanDSDisplay();
 	}
-
+	
+	void TestInit()
+	{
+		CleanDSDisplay();
+	}
+	
 	/********************************** Periodic Routines *************************************/
 	
 	void DisabledPeriodic(void)  
@@ -197,9 +204,14 @@ public:
 		MyRangeFinder.UpdateRangeLine4DS();
 		InfraredSensor.UpdateRangeLine5DS();
 		
-		//Feed joystick inputs to each subsystem here
-        MyKicker.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
-        GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
+		//if Arm is up and cradle is down
+		if ( Arm.IsArmUp() and Arm.IsCradleUp()) {
+			MyKicker.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
+			GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
+		} else { 
+			MyKicker.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
+			false);	
+		}
         
         MyRobot.DriveRobot(DriveStick->GetY(),DriveStick->GetRawAxis(4));
 		
@@ -210,7 +222,28 @@ public:
 
 		
 	} // TeleopPeriodic(void) 
-			
+	
+	void TestPeriodic()
+	{
+		//Hold buttons 5 and 6 in test mode to start Drive Test
+		if (GameStick->GetRawButton(5)and GameStick->GetRawButton(6))
+		{
+			MyRobot.DriveTrainTest();
+		}
+		
+		MyKicker.TestKicker(GameStick->GetRawButton(3),GameStick->GetRawButton(2));
+		MyKicker.TestWich(GameStick->GetRawButton(1),GameStick->GetRawButton(4));
+		MyKicker.TestDisplayLatchSwitch();
+		MyRobot.DisplayEncodersTestDSLine5Line6();
+		
+	};
+	
+	void CleanDSDisplay()
+	{
+		DriverStationLCD::GetInstance()->Clear();
+	}
+	
+	
 };
 
 START_ROBOT_CLASS(EntropyRobot2014);

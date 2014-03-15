@@ -193,8 +193,7 @@ bool RotationState::Update(double _dt)
 	
 	else if (g_whatsHot == -1 || g_whatsHot == 0)
 		m_entDrive->DriveRobot(0, 0.3);	
-	 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line3, "Voltage : %f",m_Gyro->GetRate());
-     DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line2, "Angle : %f", m_Gyro->GetAngle());
+	 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line2, "Angle : %f", m_Gyro->GetAngle());
 	 DriverStationLCD::GetInstance()->UpdateLCD();
 	
 	if (g_whatsHot == -1)
@@ -232,9 +231,7 @@ Autonomy::Autonomy(EntropyDrive& _entDrive, Gyro *_Gyro)
 	m_leftEncoder->SetPIDSourceParameter(Encoder::kRate);
 	m_rightEncoder->SetDistancePerPulse(PULSE_RATIO / 12.0);
 	m_rightEncoder->SetPIDSourceParameter(Encoder::kRate);
-	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "2");
-			 DriverStationLCD::GetInstance()->UpdateLCD();
-					 
+						 
 	m_leftEncoder->Start();
 	m_rightEncoder->Start();
 
@@ -244,12 +241,12 @@ Autonomy::Autonomy(EntropyDrive& _entDrive, Gyro *_Gyro)
 		  m_statesToComplete.push_back(new IdleState(_entDrive, 50000000));	
 		  m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 14, m_Gyro));	
 		  m_statesToComplete.push_back(new DecisionState(_entDrive));
-		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(9.5, 0), m_leftEncoder, m_rightEncoder));
+		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(9.0, 0), m_leftEncoder, m_rightEncoder));
 	}
 	else
 	{
 		m_statesToComplete.push_back(new IdleState(_entDrive, 50000000));
-		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(9.0, 0), m_leftEncoder, m_rightEncoder));
+		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(8.5, 0), m_leftEncoder, m_rightEncoder));
 	}
 
   m_currentState = m_statesToComplete.back();
