@@ -498,10 +498,11 @@ void EntropyDrive::DriveTrainTest( )
 		DriverStationLCD::GetInstance()->UpdateLCD();
 		Motors[i]->Set( 0.6 ,syncGroup);
 		CANJaguar::UpdateSyncGroup(syncGroup);
-		Wait( 3 );
+		Wait( 5 );
 		Motors[i]->Set( 0.0 , syncGroup);
 		CANJaguar::UpdateSyncGroup(syncGroup);
-		Wait( 1 );
+		Wait( 2 );
+		DisplayEncodersTestDSLine5Line6();
 	}
 }
 

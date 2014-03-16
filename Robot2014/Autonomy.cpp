@@ -32,6 +32,8 @@ void IdleState::setTimeToSpendIdle(double _timeToSpendIdle)
 
 bool IdleState::Update(double _dt)
 {
+	static double idleEpoch = _dt;
+	
   DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Idle %f | %f", m_msSpentIdle, _dt);
   DriverStationLCD::GetInstance()->UpdateLCD();
 	  
@@ -39,7 +41,7 @@ bool IdleState::Update(double _dt)
   
   // Sum the current time spent idle with the time between this frame and the last frame (delta),
   // and return whether it's exceeded the specified time to spend idle
-  return _dt > m_msToSpendIdle;
+  return _dt - idleEpoch > m_msToSpendIdle;
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -112,6 +114,8 @@ void PositionState::Init()
   m_rotCorrection = 0.0;
   m_deltaLeftDist = 0.0;
   m_deltaRightDist = 0.0;
+  s_lastLeftDist = 0.0;
+  s_lastRightDist = 0.0;
 }
 
 bool PositionState::Update(double _dt)
@@ -138,7 +142,6 @@ bool PositionState::Update(double _dt)
 	  m_entDrive->DriveRobot(m_forwardSpeed, m_rotCorrection);
 	
 	  DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line1, "Positioning");
-	  DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line4, "Rotation Auto: %f", m_rotCorrection);
 	  DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line5, "Left Dist: %f", m_leftEncoder->GetDistance());
 	  DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line6, "Right Dist: %f", m_rightEncoder->GetDistance());
 	  DriverStationLCD::GetInstance()->UpdateLCD();
@@ -234,14 +237,24 @@ Autonomy::Autonomy(EntropyDrive& _entDrive, Gyro *_Gyro)
 						 
 	m_leftEncoder->Start();
 	m_rightEncoder->Start();
-
+	DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line4, "VState: %f", m_analogChan->GetVoltage());
+			DriverStationLCD::GetInstance()->UpdateLCD();
 	
-	if(m_analogChan->GetVoltage() < 0.35)
+	if(m_analogChan->GetVoltage() < 0.6)
 	{
 		  m_statesToComplete.push_back(new IdleState(_entDrive, 50000000));	
-		  m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 14, m_Gyro));	
+		  m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 12, m_Gyro));	
 		  m_statesToComplete.push_back(new DecisionState(_entDrive));
 		  m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(9.0, 0), m_leftEncoder, m_rightEncoder));
+	}
+	else if (m_analogChan->GetVoltage() > .6 && m_analogChan->GetVoltage() < 1.2)
+	{
+		m_statesToComplete.push_back(new IdleState(_entDrive, 50000000));
+		m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 180, m_Gyro));
+		m_statesToComplete.push_back(new IdleState(_entDrive, 2.5));
+		m_statesToComplete.push_back(new RotationState(_entDrive, m_leftEncoder, m_rightEncoder, 12, m_Gyro));	
+		m_statesToComplete.push_back(new DecisionState(_entDrive));
+	    m_statesToComplete.push_back(new PositionState(_entDrive, Vec2(9.0, 0), m_leftEncoder, m_rightEncoder));
 	}
 	else
 	{

@@ -133,20 +133,22 @@ public:
 		MyCameraControl.SetCameraPositionAuto();
 		Arm.SetAutoInitialState();
 		MyAutoRobot = new Autonomy(MyRobot, m_Gyro);
-		CleanDSDisplay();
+		//CleanDSDisplay();
 	}
 
 	void TeleopInit(void) 
 	{
 		m_telePeriodicLoops = 0;				// Reset the loop counter for teleop mode
 		m_dsPacketsReceivedInCurrentSecond = 0;	// Reset the number of dsPackets in current second
-
+		
+		Arm.SetTelopInitialState();
 		MyCameraControl.SetCameraPositionTelop();
 		CleanDSDisplay();
 	}
 	
 	void TestInit()
 	{
+		MyRobot.InitEncoderTest();
 		CleanDSDisplay();
 	}
 	
@@ -186,7 +188,7 @@ public:
 			{
 				MyKicker.Kick(true, false);
 			}
-			else if(autoKicked == false && GetClock() - autoEpoch > 7.6)
+			else if(autoKicked == false && GetClock() - autoEpoch > 5.6)
 			{
 				MyKicker.Kick(false, true);
 	
@@ -205,7 +207,7 @@ public:
 		InfraredSensor.UpdateRangeLine5DS();
 		
 		//if Arm is up and cradle is down
-		if ( Arm.IsArmUp() and Arm.IsCradleUp()) {
+		if ( Arm.IsArmUp()){// and Arm.IsCradleUp()) {
 			MyKicker.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
 			GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
 		} else { 
@@ -234,8 +236,7 @@ public:
 		MyKicker.TestKicker(GameStick->GetRawButton(3),GameStick->GetRawButton(2));
 		MyKicker.TestWich(GameStick->GetRawButton(1),GameStick->GetRawButton(4));
 		MyKicker.TestDisplayLatchSwitch();
-		MyRobot.DisplayEncodersTestDSLine5Line6();
-		
+				
 	};
 	
 	void CleanDSDisplay()

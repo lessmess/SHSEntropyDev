@@ -18,6 +18,7 @@ private:
 	EntropyInfraredSensor InfraredSensor;
 	Victor * MotorBelt;
 	Jaguar * MotorExtender;
+	Solenoid * CradleLEDs;
 	
 	bool ArmUp,CradleUp;
 
@@ -27,6 +28,8 @@ public:
 	bool Initialize ();
 	
 	void SetAutoInitialState();
+	
+	void SetTelopInitialState();
 		
 	void Cleanup();
 		

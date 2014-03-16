@@ -25,10 +25,11 @@ public:
 	
 	enum {
 		ARM_RAIL = 1,
+		CRADLE_LEDS = 2,
 		ARM_ROTATION = 3,
 		KICKER_SHIFTER = 5, 
 		KICKER_TRIGGER = 7
-	}Solonoid;
+	}Solenoid;
 	
 	enum {
 		KickerLatchedSense = 10,

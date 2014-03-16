@@ -16,19 +16,27 @@ bool AcquisitionArms::Initialize()
 {
 	upperSolenoid = new Solenoid (upperSolenoidChannel);
 	lowerSolenoid = new Solenoid (lowerSolenoidChannel);
+	CradleLEDs = new Solenoid (IODefinitions::CRADLE_LEDS);
 	InfraredSensor.Initialize();
 	MotorBelt = new Victor(IODefinitions::MOTOR_ACQUISITION_BELT);
 	MotorExtender = new Jaguar(IODefinitions::MOTOR_ACQUISITION_EXTENDER);
-	ArmUp = true; 
-	CradleUp = false;
-
+	
 	return true;
 }
+
 void AcquisitionArms::SetAutoInitialState()
 {
 	CradleUp = true;
 	lowerSolenoid->Set(1);
 }
+
+void AcquisitionArms::SetTelopInitialState()
+{
+	ArmUp = true; 
+	CradleUp = false;
+ 
+}
+
 void AcquisitionArms::Cleanup() 
 {
 	ArmUp = false; 
@@ -46,7 +54,9 @@ void AcquisitionArms::UpperVerticalPos(EntropyJoystick * GameStick)
 	{
 		upperSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP));
 		ArmUp = (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP) != 1);
+		
 	}
+	
 	
 }
 void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
@@ -56,6 +66,7 @@ void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
 	{
 		lowerSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP));
 		CradleUp = (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP) == 1);
+		CradleLEDs->Set(CradleUp);
 	}
 }
 
