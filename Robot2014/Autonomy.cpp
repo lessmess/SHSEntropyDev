@@ -199,7 +199,7 @@ bool RotationState::Update(double _dt)
 	 DriverStationLCD::GetInstance()->PrintfLine(DriverStationLCD::kUser_Line2, "Angle : %f", m_Gyro->GetAngle());
 	 DriverStationLCD::GetInstance()->UpdateLCD();
 	
-	if (g_whatsHot == -1)
+	if (g_whatsHot <= 0)
 	{
 		return (m_Gyro->GetAngle() - rotationEpoch >=  m_targetRotation);//(m_rotation += m_Gyro->GetAngle()) <= m_targetRotation;
 	}
