@@ -240,9 +240,9 @@
         </mapAttribute>
     </attributes>
     <buildtargets>
-        <buildtarget buildtool="Linker" name="Robot2014" passed="false" targetname="Robot2014">
+        <buildtarget buildtool="Linker" name="Entropy2014 4th of July" passed="false" targetname="Entropy2014 4th of July">
             <contents>
-                <folder name="/Robot2014" recursive="true"/>
+                <folder name="/Entropy2014 4th of July" recursive="true"/>
             </contents>
         </buildtarget>
     </buildtargets>

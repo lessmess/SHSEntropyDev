@@ -13,6 +13,7 @@
 #include "EntropyRangeFinder.h"
 #include "Autonomy.h"
 #include "Gyro.h"
+#include "Controller.h"
 
 
 class EntropyRobot2014 : public IterativeRobot
@@ -40,7 +41,7 @@ class EntropyRobot2014 : public IterativeRobot
     EntropyCamera MyCameraControl;
     EntropyRangeFinder MyRangeFinder;
     Autonomy* MyAutoRobot;
-    
+    EntropyGamepad MyController;
 	// Local variables to count the number of periodic loops performed
 	UINT32 m_autoPeriodicLoops;
 	UINT32 m_disabledPeriodicLoops;
@@ -63,7 +64,8 @@ public:
 
 		// Establish Hardware IO Controllers
 		DriveStick = new EntropyJoystick(IODefinitions::USB_PORT_1);
-		GameStick = new EntropyJoystick(IODefinitions::USB_PORT_2);		
+		GameStick = new EntropyJoystick(IODefinitions::USB_PORT_2);	
+		//MyController = new Gamepad;
 	    
 		AxisCamera* axisCam = &AxisCamera::GetInstance();
 		
@@ -207,6 +209,7 @@ public:
 		InfraredSensor.UpdateRangeLine5DS();
 		
 		//if Arm is up and cradle is down
+		/*
 		if ( Arm.IsArmUp()){// and Arm.IsCradleUp()) {
 			MyKicker.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
 			GameStick->GetRawButton(IODefinitions::KICKER_TRIGGERKICK));
@@ -214,14 +217,65 @@ public:
 			MyKicker.Kick(GameStick->GetRawButton(IODefinitions::KICKER_PREPAREKICK), 
 			false);	
 		}
-        
+        */
         MyRobot.DriveRobot(DriveStick->GetY(),DriveStick->GetRawAxis(4));
 		
-		Arm.UpperVerticalPos(GameStick);
-		Arm.LowerVerticalPos(GameStick);
-		Arm.Extend(GameStick);
-		Arm.BeltEnable(GameStick);
-
+        int state = 0;
+        bool pressed_flag = false;
+        /* 
+         * 0 is default/object transport
+         * 1 is field aquire
+         * 2 is human aquire
+         * 3 is shoot high
+         * 4 is shoot low
+         */
+        
+        
+        if (GameStick->GetRawButton(7)== true)
+        {
+        	MyController.Field_Aquire();
+        	state = 1;
+        }
+        else if (GameStick->GetRawButton(5) == true)
+        {
+        	MyController.Human_Aquire();
+        	state = 2;
+        }
+        else if (GameStick->GetRawButton(6) == true)
+        {
+        	if (state != 3)
+        	{
+        		MyController.kick_counter = GetClock();
+        	}
+        	MyController.Shoot_High();
+        	state = 3;
+        }
+        else if (GameStick->GetRawButton(4) == true)
+        {
+        	MyController.Shoot_Low();
+        	state = 4;
+        	pressed_flag = true;
+        	
+        }
+        else if (pressed_flag = false)
+        {
+        	MyController.Object_Transport();
+        	state = 0;
+        }
+        else if (GameStick->GetRawButton(1) == true)
+        {
+        	MyController.Object_Transport();
+        	state = 0;
+        	pressed_flag = false;
+        }
+  
+        
+        /*
+		Arm.UpperVerticalPos(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP),GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN));
+		Arm.LowerVerticalPos(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP),GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_DOWN));
+		Arm.Extend(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT),GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_IN),GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN));
+		Arm.BeltEnable(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN),GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_OUT));
+		*/
 		
 	} // TeleopPeriodic(void) 
 	

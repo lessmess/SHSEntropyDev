@@ -47,38 +47,38 @@ void AcquisitionArms::Cleanup()
 	MotorBelt->Set(0.0);
 	
 }
-void AcquisitionArms::UpperVerticalPos(EntropyJoystick * GameStick) 
+void AcquisitionArms::UpperVerticalPos(bool Arm_Up, bool Arm_Down) 
 {
-	if( GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP) 
-			^ GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN))
+	if( Arm_Up 
+			^ Arm_Down)
 	{
-		upperSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP));
-		ArmUp = (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_UP) != 1);
+		upperSolenoid->Set(Arm_Up);
+		ArmUp = (Arm_Up != 1);
 		
 	}
 	
 	
 }
-void AcquisitionArms::LowerVerticalPos(EntropyJoystick * GameStick)
+void AcquisitionArms::LowerVerticalPos(bool Cradle_Up, bool Cradle_Down)
 {
-	if( GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_DOWN) 
-			^ GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP))
+	if( Cradle_Down 
+			^ Cradle_Up)
 	{
-		lowerSolenoid->Set(GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP));
-		CradleUp = (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_CRADLE_UP) == 1);
+		lowerSolenoid->Set(Cradle_Up);
+		CradleUp = (Cradle_Up == 1);
 		CradleLEDs->Set(CradleUp);
 	}
 }
 
-void AcquisitionArms::Extend(EntropyJoystick * GameStick)
+void AcquisitionArms::Extend(bool Arm_Out, bool Arm_In, bool Arm_Down)
 {
-	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_OUT)) {
+	if (Arm_Out) {
 		 extendCounter=0;
 		MotorExtender->Set(0.75);
-	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_IN)) {
+	} else if (Arm_In) {
 		 extendCounter=0;
 		MotorExtender->Set(-0.75);
-	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_DOWN)
+	} else if (Arm_Down
 			and extendCounter==0){
 		extendCounter=extendCounterStart;
 		MotorExtender->Set(-0.75);
@@ -90,11 +90,11 @@ void AcquisitionArms::Extend(EntropyJoystick * GameStick)
 	}
 }
 
-void AcquisitionArms::BeltEnable(EntropyJoystick * GameStick)
+void AcquisitionArms::BeltEnable(bool Roll_In, bool Roll_Out)
 {
-	if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_IN)) {
+	if (Roll_In) {
 		MotorBelt->Set(1.0);
-	} else if (GameStick->GetRawButton(IODefinitions::GAME_BUTTON_ARM_ROLL_OUT)){
+	} else if (Roll_Out){
 		MotorBelt->Set(-1.0);
 	} else {
 		MotorBelt->Set(0.0);

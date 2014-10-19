@@ -35,13 +35,13 @@ public:
 		
 	char * GetFeedback();
 	
-	void UpperVerticalPos(EntropyJoystick * GameStick);
+	void UpperVerticalPos(bool Arm_Up, bool Arm_Down);
 	
-	void LowerVerticalPos(EntropyJoystick * GameStick);
+	void LowerVerticalPos(bool Cradle_Up, bool Cradle_Down);
 
-	void Extend(EntropyJoystick * GameStick);
+	void Extend(bool Arm_Out, bool Arm_In, bool Arm_Down);
 	
-	void BeltEnable(EntropyJoystick * GameStick);
+	void BeltEnable(bool Roll_In, bool Roll_Out);
 	
 	bool IsArmUp(){ return ArmUp; }
 	
